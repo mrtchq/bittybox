@@ -1145,7 +1145,15 @@ function applyTheme(theme, isUserAction = false) {
 
   let metaLight = QS("#themeColor");
   if (metaLight) {
-    metaLight.content = theme === 'dark' ? '#111111' : '#f1f1f1';
+    metaLight.content = '#FCCD84';
+  }
+  let metaDark = QS("#themeColorDark");
+  if (metaDark) {
+    metaDark.content = '#FCCD84';
+  }
+  let metaGeneral = QS('meta[name="theme-color"]:not([id])');
+  if (metaGeneral) {
+    metaGeneral.content = '#FCCD84';
   }
 }
 

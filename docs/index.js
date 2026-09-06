@@ -68,6 +68,14 @@
       document.head.appendChild(el);
     }
     el.content = color;
+    let elDark = document.getElementById("themeColorDark");
+    if (elDark) {
+      elDark.content = color;
+    }
+    let generalMeta = document.querySelector('meta[name="theme-color"]:not([id])');
+    if (generalMeta) {
+      generalMeta.content = color;
+    }
   }
 
   function setFavicon(favicon) {

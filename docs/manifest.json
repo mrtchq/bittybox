@@ -6,21 +6,43 @@
     {
       "src": "/favicon.svg",
       "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "type": "image/png",
       "sizes": "32x32"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/edit",
-  "background_color": "#3367D6",
+  "background_color": "#FCCD84",
   "display": "browser",
   "scope": "/",
-  "theme_color": "#3367D6",
+  "theme_color": "#FCCD84",
   "shortcuts": [
     {
       "name": "New",
       "short_name": "New Site",
       "description": "New Site",
       "url": "/edit",
-      "icons": [{ "src": "/favicon.svg", "sizes": "32x32" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
