@@ -607,6 +607,31 @@ const el = (selector, ...args) => {
   return node;
 };
 
+let currentBittyStatus = {
+  state: 'ready',
+  message: 'Ready',
+  format: 'READY',
+  size: 0,
+  sizeLabel: '',
+  online: typeof navigator !== 'undefined' ? navigator.onLine : true
+};
+
+function getStatus() {
+  if (typeof window !== 'undefined' && window.bittyStatus) {
+    return window.bittyStatus;
+  }
+  return currentBittyStatus;
+}
+
+function setStatus(newStatus) {
+  currentBittyStatus = Object.assign({}, currentBittyStatus, newStatus);
+  if (typeof window !== 'undefined') {
+    window.bittyStatus = currentBittyStatus;
+    window.dispatchEvent(new CustomEvent('bitty:status', { detail: currentBittyStatus }));
+  }
+  return currentBittyStatus;
+}
+
 export {
   DataURL,
   infoForDataURL,
@@ -624,6 +649,8 @@ export {
   parseBittyURL,
   el,
   loadScript,
+  getStatus,
+  setStatus,
   BASE64_MARKER,
   LZMA64_MARKER,
   BASE_MARKER,

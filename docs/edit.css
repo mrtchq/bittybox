@@ -497,6 +497,26 @@ body.format .dock-format-shelf {
   display: block;
 }
 
+.dock-account-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  display: block;
+  filter: brightness(0);
+}
+
+[data-theme="dark"] .dock-account-icon {
+  filter: brightness(0) invert(1);
+}
+
+.dock-btn.active .dock-account-icon {
+  filter: brightness(0) invert(1);
+}
+
+[data-theme="dark"] .dock-btn.active .dock-account-icon {
+  filter: brightness(0);
+}
+
 .dock-aa-icon {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
@@ -712,9 +732,22 @@ div.menu-contents {
   display:none;
 }
 
-.menu-visible .menu {
+.menu-visible .menu,
+#md-contents.menu.menu-visible {
   display: block;
   background-color: var(--background-color);
+  animation: menuFadeSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes menuFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 #menubar > a:active,
@@ -793,35 +826,43 @@ label:first-child {
   .dock-wrapper {
     bottom: 12px;
     max-width: calc(100vw - 16px);
-    width: calc(100vw - 16px);
+    width: auto;
   }
   #menubar.dock-bar {
-    width: 100%;
-    justify-content: flex-start;
-    padding: 4px 6px;
-    gap: 2px;
+    max-width: 100%;
+    justify-content: center;
+    padding: 4px 8px;
+    gap: 3px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
   .dock-btn {
-    padding: 0 8px;
-    height: 30px;
-    font-size: 11px;
-    gap: 4px;
+    padding: 0 9px;
+    height: 32px;
+    font-size: 11.5px;
+    gap: 5px;
   }
   .dock-format-shelf {
     max-width: calc(100vw - 20px);
   }
 }
 @media only screen and (max-width: 480px) {
-  .dock-segment-utils .dock-btn-label {
-    display: none;
+  #menubar.dock-bar {
+    justify-content: flex-start;
   }
-  .dock-segment-craft .dock-btn-label {
+  .dock-segment-tools .dock-btn-label,
+  .dock-segment-primary .dock-btn-label,
+  .dock-segment-utils .dock-btn-label,
+  .dock-segment-craft .dock-btn-label,
+  .dock-segment-status .dock-btn-label {
     display: none;
   }
   .dock-btn {
-    padding: 0 7px;
+    padding: 0 8px;
+    height: 32px;
+  }
+  .dock-autosave {
+    padding: 0 6px;
   }
 }
 
@@ -1092,34 +1133,43 @@ body.filecontent #formatbar {
   align-items: center;
 }
 
-.recent-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
 .recent-popover {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  right: 0;
-  width: 290px;
-  max-width: 90vw;
-  background: var(--background-color);
-  border: 1px solid var(--divider-color);
-  border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
-  z-index: 1000;
+  position: fixed;
+  z-index: 10000;
+  pointer-events: auto;
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  max-height: min(360px, calc(100vh - 100px));
+  background: var(--dock-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--dock-border);
+  border-radius: 14px;
+  box-shadow: 0 20px 48px -6px rgba(0, 0, 0, 0.3), 0 6px 16px -2px rgba(0, 0, 0, 0.12);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  animation: recentPopoverIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes recentPopoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .recent-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--divider-color);
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--dock-divider);
+  background: rgba(128, 128, 128, 0.04);
 }
 
 .recent-title-heading {
@@ -1134,13 +1184,16 @@ body.filecontent #formatbar {
   background: transparent;
   border: none;
   font-size: 11px;
+  font-weight: 600;
   color: var(--text-placeholder-color);
   cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 3px;
+  padding: 3px 8px;
+  border-radius: 4px;
   font-family: inherit;
+  transition: all 0.12s ease;
 }
 .recent-clear-btn:hover {
+  background: var(--dock-btn-hover);
   color: var(--selected-text-color);
 }
 
@@ -1148,24 +1201,29 @@ body.filecontent #formatbar {
   list-style: none;
   margin: 0;
   padding: 4px 0;
-  max-height: 220px;
+  max-height: 260px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .recent-item {
-  padding: 8px 14px;
+  padding: 9px 14px;
   cursor: pointer;
-  transition: background 0.1s ease;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  transition: background 0.12s ease;
+  border-bottom: 1px solid var(--dock-divider);
   display: flex;
   flex-direction: column;
   gap: 2px;
+  user-select: none;
 }
 .recent-item:last-child {
   border-bottom: none;
 }
 .recent-item:hover {
-  background: rgba(128, 128, 128, 0.12);
+  background: var(--dock-btn-hover);
+}
+.recent-item:active {
+  background: var(--dock-btn-active);
 }
 
 .recent-title {
@@ -1183,7 +1241,7 @@ body.filecontent #formatbar {
 }
 
 .recent-empty {
-  padding: 20px 14px;
+  padding: 24px 14px;
   text-align: center;
   font-size: 12px;
   color: var(--text-placeholder-color);
@@ -1297,6 +1355,302 @@ dialog.bitty-modal::backdrop {
 }
 .modal-action-btn:hover {
   opacity: 0.88;
+}
+
+/* Account Modal Specific Styles */
+dialog.account-modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: 380px;
+  max-width: calc(100vw - 28px);
+  border: 1px solid var(--divider-color);
+  border-radius: 14px;
+  background: var(--background-color);
+  color: var(--text-color);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32), 0 4px 12px rgba(0, 0, 0, 0.12);
+  padding: 0;
+  outline: none;
+  z-index: 1100;
+  overflow: hidden;
+}
+
+dialog.account-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: accountBackdropFadeIn 0.2s ease forwards;
+}
+
+@keyframes accountBackdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+dialog.account-modal[open] {
+  animation: accountModalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes accountModalFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.account-modal-container {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.account-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(128, 128, 128, 0.06);
+  border: 1px solid var(--divider-color);
+  border-radius: 9px;
+}
+
+.account-avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.account-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fccd84;
+  color: #1c1917;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  user-select: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .account-avatar {
+  background: #fcd34d;
+  color: #0f172a;
+}
+
+.account-avatar-initials {
+  line-height: 1;
+}
+
+.account-avatar-icon {
+  display: block;
+  color: currentColor;
+}
+
+.account-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.account-profile-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-profile-email {
+  font-size: 12px;
+  color: var(--text-placeholder-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-profile-type {
+  font-size: 11px;
+  color: var(--text-placeholder-color);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 1px;
+}
+
+.account-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.account-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-placeholder-color);
+}
+
+.account-input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--background-color);
+  border: 1px solid var(--divider-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.account-input:focus {
+  border-color: var(--selected-text-color);
+  box-shadow: 0 0 0 2px rgba(252, 205, 132, 0.25);
+}
+
+.account-form-actions {
+  margin-top: 2px;
+}
+
+.account-save-btn {
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--text-color);
+  color: var(--background-color);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.account-save-btn:hover {
+  opacity: 0.88;
+}
+
+.account-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.account-stat-box {
+  padding: 8px 6px;
+  background: rgba(128, 128, 128, 0.05);
+  border: 1px solid var(--divider-color);
+  border-radius: 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.account-stat-val {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.account-stat-lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-placeholder-color);
+  letter-spacing: 0.3px;
+}
+
+.account-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.account-action-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--divider-color);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-color);
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.account-action-btn.secondary:hover {
+  background: var(--dock-btn-hover);
+  color: var(--selected-text-color);
+}
+
+.account-action-btn.close-btn {
+  background: rgba(128, 128, 128, 0.08);
+}
+
+.account-action-btn.close-btn:hover {
+  background: var(--dock-btn-hover);
+  color: var(--text-color);
+}
+
+.account-action-btn.danger {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.account-action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+
+.account-privacy-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(128, 128, 128, 0.04);
+  border: 1px dashed var(--divider-color);
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--text-placeholder-color);
 }
 
 .toast-message {

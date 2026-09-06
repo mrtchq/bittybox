@@ -36,24 +36,73 @@
     return document.iframe;
   }
 
+  function ensureIframeShimmer() {
+    let shimmer = document.getElementById("iframe-shimmer");
+    if (!shimmer) {
+      shimmer = bitty.el("div#iframe-shimmer", {
+        "aria-hidden": "true",
+        role: "presentation"
+      },
+        bitty.el("div.shimmer-stage",
+          bitty.el("div.shimmer-topbar",
+            bitty.el("div.shimmer-bone.shimmer-pill"),
+            bitty.el("div.shimmer-bone.shimmer-tag")
+          ),
+          bitty.el("div.shimmer-bone.shimmer-hero"),
+          bitty.el("div.shimmer-lines",
+            bitty.el("div.shimmer-bone.shimmer-line.shimmer-line-1"),
+            bitty.el("div.shimmer-bone.shimmer-line.shimmer-line-2"),
+            bitty.el("div.shimmer-bone.shimmer-line.shimmer-line-3")
+          ),
+          bitty.el("div.shimmer-status",
+            bitty.el("span.shimmer-status-dot"),
+            bitty.el("span.shimmer-status-label", "Processing URL content…")
+          )
+        )
+      );
+      document.body.appendChild(shimmer);
+    }
+    return shimmer;
+  }
+
+  function updateShimmerStatus(message) {
+    let shimmer = document.getElementById("iframe-shimmer");
+    if (!shimmer) return;
+    let label = shimmer.querySelector(".shimmer-status-label");
+    if (label && message) {
+      label.textContent = message;
+    }
+  }
+
   let autohideTimeout;
   function showLoader(state) {
     let loader = document.getElementById("loader");
+    let shimmer = document.getElementById("iframe-shimmer");
     if (autohideTimeout) {
       clearTimeout(autohideTimeout);
       autohideTimeout = undefined;
     }
     if (state) {
+      if (!shimmer) {
+        shimmer = ensureIframeShimmer();
+      }
+      shimmer.classList.add("shimmer-active");
       if (!loader) {
         loader = document.createElement("div");
         loader.id = "loader";
         document.body.appendChild(loader);
       }
-      autohideTimeout = setTimeout(() => {showLoader(false)}, 3000)
-    } else if (loader) {
-      setTimeout(() => loader?.parentElement?.removeChild(loader), 1000)
+      autohideTimeout = setTimeout(() => { showLoader(false); }, 4500);
+      document.body.classList.add("loading");
+    } else {
+      if (shimmer) {
+        shimmer.classList.remove("shimmer-active");
+      }
+      if (loader) {
+        setTimeout(() => loader?.parentElement?.removeChild(loader), 1000);
+      }
+      document.body.classList.remove("loading");
     }
-    setTimeout(() => document.body.classList.toggle("loading", state), 500)
   }
   window.showLoader = showLoader;
 
@@ -103,10 +152,10 @@
 
 
   function share(info) { // {title, text, url}
-
-    let menu = new bitty_menu.Menu();
-    console.log("men", menu)
-    menu.show(info)
+    let btn = document.getElementById("menu");
+    let menu = new bitty_menu.Menu(btn);
+    console.log("men", menu);
+    menu.show(info);
     return;
   }
   function systemShare(info) {
@@ -117,7 +166,32 @@
         .then(() => { console.log('Shared!');})
         .catch(console.error);
     } else {
-      copyLink(info)
+      let menu = new bitty_menu.Menu();
+      menu.copyLink();
+    }
+  }
+
+  function ensureMenuButton() {
+    if (isFramed) return;
+    let menuBtn = document.getElementById("menu");
+    if (!menuBtn) {
+      menuBtn = bitty.el("button#menu", {
+        type: "button",
+        title: "Menu & Sharing",
+        "aria-label": "Toggle sharing menu",
+        innerHTML: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle class="outer" cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><circle class="inner" cx="12" cy="12" r="3.5" fill="currentColor"/></svg>`
+      });
+      let menuInstance = new bitty_menu.Menu(menuBtn);
+      menuBtn.onclick = () => {
+        let openMenu = document.querySelector("dialog.menu");
+        if (openMenu) {
+          menuInstance.close(openMenu);
+        } else {
+          let rect = menuBtn.getBoundingClientRect();
+          menuInstance.show({ offset: { left: rect.left + rect.width / 2, top: rect.bottom + 8 } });
+        }
+      };
+      document.body.appendChild(menuBtn);
     }
   }
 
@@ -243,7 +317,10 @@
   
   async function renderContent() {
     
-    showLoader(true)    
+    showLoader(true);
+    if (bitty.setStatus) {
+      bitty.setStatus({ state: "loading", message: "Loading content…", format: "LOADING" });
+    }    
 
     var fragment = window.location.hash.substring(1);
 
@@ -372,12 +449,45 @@
         'Edge only supports shorter URLs (maximum 2083 bytes).<br>Larger sites may require a different browser.<br><a href="http://reference.bitty.site">Learn more</a>';
     }
 
+    ensureMenuButton();
+
+    let encodingName = (durl.params && durl.params.format) || (fragment.startsWith("XQA") ? "LZMA" : "GZIP");
+    if (bitty.setStatus) {
+      bitty.setStatus({
+        state: "decompressing",
+        message: `Decompressing (${encodingName})…`,
+        format: encodingName
+      });
+    }
+    updateShimmerStatus(`Decompressing ${encodingName}…`);
+
     await durl.decompress()
 
     if (durl.error) {
+      if (bitty.setStatus) {
+        bitty.setStatus({
+          state: "error",
+          message: durl.error || "Decompression error",
+          format: "ERROR"
+        });
+      }
       writeDocContent(iframe.contentWindow.document, atob(bitty.HEAD_TAGS_EXTENDED()) + `<style>.error{color:red; background:pink; max-width:320px; margin:auto; padding:1em;}</style><div class="error">${durl.error}</div>`)
       showLoader(false)
       return
+    }
+
+    updateShimmerStatus("Rendering content…");
+
+    let rawByteCount = durl.rawData?.length || durl.data?.length || 0;
+    let sizeStr = rawByteCount > 1024 ? (rawByteCount / 1024).toFixed(1) + "KB" : rawByteCount + "B";
+    if (bitty.setStatus) {
+      bitty.setStatus({
+        state: "ready",
+        message: "Decompressed & ready",
+        format: encodingName,
+        size: rawByteCount,
+        sizeLabel: sizeStr
+      });
     }
 
     durl.dataPrefix = dataPrefix;
@@ -392,12 +502,17 @@
     console.log("🖋 Rendering mode: " + "\x1B[1m" + renderMode, {url:durl})
     
     if (renderMode == "data") {
+      iframe.onload = () => {
+        showLoader(false);
+        delete iframe.onload;
+      };
       iframe.src = dataURL;
-      showLoader(false)   
+      setTimeout(() => showLoader(false), 250);
     } else {
       bitty.dataToString(dataURL, function(content) {
         if (renderMode == "frame") {
           writeDocContent(overwriteSelf ? document : iframe.contentWindow.document, content)
+          showLoader(false)
         } else if (renderMode == "script") {
           renderContentWithScript({renderer, title, info, body:content, url:dataURL, overwrite:overwriteSelf});
         }
@@ -448,7 +563,7 @@
         iframe.contentWindow.postMessage(params, "*");
         delete iframe.onload
         iframe.contentWindow.focus();
-        // showLoader(false)
+        showLoader(false);
       });
       // writeDocContent(iframe.contentWindow.document, SCRIPT_LOADER)
       // iframe.srcdoc = SCRIPT_LOADER;

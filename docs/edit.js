@@ -142,6 +142,62 @@ window.onload = async function() {
       if (e.target === QS("#templates-modal")) QS("#templates-modal").close();
     };
   }
+
+  // Account modal events
+  let accountBtn = QS("#account-btn");
+  if (accountBtn) {
+    accountBtn.onclick = showAccountModal;
+  }
+  let accountModal = QS("#account-modal");
+  if (accountModal) {
+    accountModal.onclick = (e) => {
+      if (e.target === accountModal) accountModal.close();
+    };
+    accountModal.addEventListener("close", () => {
+      QS("#account-btn")?.classList.remove("active");
+    });
+  }
+  if (QS("#account-modal-close")) {
+    QS("#account-modal-close").onclick = () => QS("#account-modal")?.close();
+  }
+  if (QS("#account-modal-close-btn")) {
+    QS("#account-modal-close-btn").onclick = () => QS("#account-modal")?.close();
+  }
+  if (QS("#account-save-btn")) {
+    QS("#account-save-btn").onclick = saveUserProfile;
+  }
+  if (QS("#account-name-input")) {
+    QS("#account-name-input").onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveUserProfile();
+      }
+    };
+    QS("#account-name-input").oninput = () => {
+      let n = QS("#account-name-input")?.value;
+      let em = QS("#account-email-input")?.value;
+      updateProfileAvatar(n, em);
+    };
+  }
+  if (QS("#account-email-input")) {
+    QS("#account-email-input").onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveUserProfile();
+      }
+    };
+    QS("#account-email-input").oninput = () => {
+      let n = QS("#account-name-input")?.value;
+      let em = QS("#account-email-input")?.value;
+      updateProfileAvatar(n, em);
+    };
+  }
+  if (QS("#account-export-btn")) {
+    QS("#account-export-btn").onclick = exportProjectsBackup;
+  }
+  if (QS("#account-clear-history-btn")) {
+    QS("#account-clear-history-btn").onclick = clearAccountHistory;
+  }
   QSS(".template-card").forEach(card => {
     card.onclick = () => insertTemplate(card.dataset.template);
     card.onkeydown = (e) => {
@@ -214,9 +270,20 @@ window.onload = async function() {
     let popover = QS("#recent-popover");
     let recentBtn = QS("#recent-btn");
     if (popover && popover.style.display !== "none") {
-      if (!popover.contains(e.target) && e.target !== recentBtn) {
+      if (!popover.contains(e.target) && (!recentBtn || !recentBtn.contains(e.target))) {
         popover.style.display = "none";
+        if (recentBtn) {
+          recentBtn.classList.remove("active");
+          recentBtn.setAttribute("aria-expanded", "false");
+        }
       }
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    let popover = QS("#recent-popover");
+    if (popover && popover.style.display !== "none") {
+      positionRecentPopover();
     }
   });
 
@@ -229,8 +296,13 @@ window.onload = async function() {
     }
     if (e.key === "Escape") {
       let popover = QS("#recent-popover");
+      let recentBtn = QS("#recent-btn");
       if (popover && popover.style.display !== "none") {
         popover.style.display = "none";
+        if (recentBtn) {
+          recentBtn.classList.remove("active");
+          recentBtn.setAttribute("aria-expanded", "false");
+        }
       }
       let qrModal = QS("#qr-modal");
       if (qrModal && qrModal.open) {
@@ -239,6 +311,10 @@ window.onload = async function() {
       let templatesModal = QS("#templates-modal");
       if (templatesModal && templatesModal.open) {
         templatesModal.close();
+      }
+      let accountModal = QS("#account-modal");
+      if (accountModal && accountModal.open) {
+        accountModal.close();
       }
       if (formatContent) {
         toggleFormat(false);
@@ -697,6 +773,150 @@ function showQRCodeModal() {
   }
 }
 
+function getInitials(name) {
+  if (!name || typeof name !== 'string') return '';
+  let parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function updateProfileAvatar(name, email) {
+  let initialsEl = QS("#account-avatar-initials");
+  let iconEl = QS("#account-avatar-icon");
+  let initials = getInitials(name);
+  if (!initials && email) {
+    let emailUser = email.split('@')[0];
+    initials = getInitials(emailUser);
+  }
+  if (initials) {
+    if (initialsEl) {
+      initialsEl.innerText = initials;
+      initialsEl.style.display = 'block';
+    }
+    if (iconEl) iconEl.style.display = 'none';
+  } else {
+    if (initialsEl) initialsEl.style.display = 'none';
+    if (iconEl) iconEl.style.display = 'block';
+  }
+}
+
+function showAccountModal() {
+  let modal = QS("#account-modal");
+  let btn = QS("#account-btn");
+  if (!modal) return;
+
+  // Populate creator name and email
+  let savedName = localStorage.getItem('bitty_display_name') || localStorage.getItem('bitty_author_name') || 'Thierry Charlemagne';
+  let savedEmail = localStorage.getItem('bitty_user_email') || 'thierrycharlemagne@gmail.com';
+
+  let nameInput = QS("#account-name-input");
+  let emailInput = QS("#account-email-input");
+  let profileName = QS("#account-profile-name");
+  let profileEmail = QS("#account-profile-email");
+
+  if (nameInput) nameInput.value = savedName;
+  if (emailInput) emailInput.value = savedEmail;
+  if (profileName) profileName.innerText = savedName.trim() || 'Thierry Charlemagne';
+  if (profileEmail) profileEmail.innerText = savedEmail.trim() || 'thierrycharlemagne@gmail.com';
+
+  updateProfileAvatar(savedName, savedEmail);
+
+  // Populate stats
+  let projectsList = getRecentProjects();
+  let projectsCount = QS("#account-stat-projects");
+  if (projectsCount) projectsCount.innerText = projectsList.length;
+
+  let totalBytes = 0;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      let val = localStorage.getItem(key);
+      if (key && val) totalBytes += key.length + val.length;
+    }
+  } catch (e) {}
+  let bytesDisplay = totalBytes < 1024 ? `${totalBytes} B` : `${(totalBytes / 1024).toFixed(1)} KB`;
+  let statBytes = QS("#account-stat-bytes");
+  if (statBytes) statBytes.innerText = bytesDisplay;
+
+  let statTheme = QS("#account-stat-theme");
+  if (statTheme) {
+    let active = (typeof getActiveTheme === 'function') ? getActiveTheme() : 'light';
+    statTheme.innerText = active === 'dark' ? 'Dark' : 'Light';
+  }
+
+  if (btn) btn.classList.add("active");
+  modal.showModal();
+}
+
+function saveUserProfile() {
+  let nameInput = QS("#account-name-input");
+  let emailInput = QS("#account-email-input");
+  let profileName = QS("#account-profile-name");
+  let profileEmail = QS("#account-profile-email");
+
+  let name = nameInput ? nameInput.value.trim() : '';
+  let email = emailInput ? emailInput.value.trim() : '';
+
+  if (name) {
+    localStorage.setItem('bitty_author_name', name);
+    localStorage.setItem('bitty_display_name', name);
+    if (profileName) profileName.innerText = name;
+  } else {
+    localStorage.removeItem('bitty_author_name');
+    localStorage.removeItem('bitty_display_name');
+    if (profileName) profileName.innerText = 'Thierry Charlemagne';
+  }
+
+  if (email) {
+    localStorage.setItem('bitty_user_email', email);
+    if (profileEmail) profileEmail.innerText = email;
+  } else {
+    localStorage.removeItem('bitty_user_email');
+    if (profileEmail) profileEmail.innerText = 'thierrycharlemagne@gmail.com';
+  }
+
+  updateProfileAvatar(name || 'Thierry Charlemagne', email || 'thierrycharlemagne@gmail.com');
+  showToast("Account profile saved!");
+}
+
+function saveCreatorName() {
+  saveUserProfile();
+}
+
+function exportProjectsBackup() {
+  let list = getRecentProjects();
+  let backupData = {
+    version: "2.0",
+    exportedAt: new Date().toISOString(),
+    creator: localStorage.getItem('bitty_author_name') || 'Anonymous',
+    projects: list
+  };
+  let blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = `bitty-box-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Backup exported successfully!");
+}
+
+function clearAccountHistory() {
+  let list = getRecentProjects();
+  if (list.length === 0) {
+    showToast("No saved projects to clear");
+    return;
+  }
+  localStorage.removeItem(RECENT_STORAGE_KEY);
+  renderRecentList();
+  let statProjects = QS("#account-stat-projects");
+  if (statProjects) statProjects.innerText = '0';
+  showToast("Recent projects history cleared");
+}
+
 const RECENT_STORAGE_KEY = 'bitty_recent_projects';
 
 function getRecentProjects() {
@@ -784,6 +1004,8 @@ function renderRecentList() {
 
     li.onclick = (e) => {
       e.stopPropagation();
+      let popover = QS("#recent-popover");
+      if (popover) popover.style.display = "none";
       window.location.hash = item.hash;
       location.reload();
     };
@@ -792,15 +1014,48 @@ function renderRecentList() {
   });
 }
 
+function positionRecentPopover() {
+  let popover = QS("#recent-popover");
+  let recentBtn = QS("#recent-btn");
+  if (!popover || !recentBtn) return;
+
+  let btnRect = recentBtn.getBoundingClientRect();
+  let popoverWidth = Math.min(300, window.innerWidth - 24);
+
+  // Horizontally center popover over the recent button, clamping within viewport
+  let left = btnRect.left + (btnRect.width / 2) - (popoverWidth / 2);
+  if (left + popoverWidth > window.innerWidth - 12) {
+    left = window.innerWidth - 12 - popoverWidth;
+  }
+  if (left < 12) {
+    left = 12;
+  }
+
+  let bottom = window.innerHeight - btnRect.top + 10;
+  popover.style.left = `${Math.round(left)}px`;
+  popover.style.bottom = `${Math.round(bottom)}px`;
+  popover.style.width = `${Math.round(popoverWidth)}px`;
+}
+
 function toggleRecentPopover() {
   let popover = QS("#recent-popover");
+  let recentBtn = QS("#recent-btn");
   if (!popover) return;
   let isVisible = popover.style.display !== "none";
   if (!isVisible) {
     renderRecentList();
     popover.style.display = "flex";
+    positionRecentPopover();
+    if (recentBtn) {
+      recentBtn.classList.add("active");
+      recentBtn.setAttribute("aria-expanded", "true");
+    }
   } else {
     popover.style.display = "none";
+    if (recentBtn) {
+      recentBtn.classList.remove("active");
+      recentBtn.setAttribute("aria-expanded", "false");
+    }
   }
 }
 
