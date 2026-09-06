@@ -32,8 +32,13 @@ function resolveFilePath(reqPath) {
     pathname += 'index.html';
   }
 
+  // Prevent directory traversal
+  let fullPath = path.resolve(DOCS_DIR, '.' + (pathname.startsWith('/') ? pathname : '/' + pathname));
+  if (!fullPath.startsWith(DOCS_DIR)) {
+    return null;
+  }
+
   // First check exact file
-  let fullPath = path.join(DOCS_DIR, pathname);
   if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
     return fullPath;
   }
@@ -50,10 +55,12 @@ function resolveFilePath(reqPath) {
     return dirIndexPath;
   }
 
-  // SPA fallback for pathnames that look like Bitty Box routes or titles
-  let indexPath = path.join(DOCS_DIR, 'index.html');
-  if (fs.existsSync(indexPath)) {
-    return indexPath;
+  // Only use SPA fallback if the path doesn't have a file extension
+  if (!path.extname(pathname)) {
+    let indexPath = path.join(DOCS_DIR, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      return indexPath;
+    }
   }
 
   return null;
@@ -86,6 +93,16 @@ const server = http.createServer((req, res) => {
     if (err) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('500 Internal Server Error');
+      return;
+    }
+
+    if (req.method === 'HEAD') {
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Cache-Control': 'no-cache',
+        'Content-Length': data.length
+      });
+      res.end();
       return;
     }
 
