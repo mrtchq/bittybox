@@ -102,12 +102,6 @@ window.onload = async function() {
   if (QS("#preview")) QS("#preview").onclick = togglePreview;
   if (QS("#format-toggle")) QS("#format-toggle").onclick = toggleFormat;
   
-  if (QS("#format-code-btn")) {
-    QS("#format-code-btn").onclick = () => {
-      let formatted = formatEditorCode();
-      showToast(formatted ? "Code auto-indented!" : "Code already cleanly indented");
-    };
-  }
   if (QS("#preview-toggle-btn")) QS("#preview-toggle-btn").onclick = () => togglePreview();
   if (QS("#qr-btn")) QS("#qr-btn").onclick = showQRCodeModal;
   if (QS("#qr-modal-close")) QS("#qr-modal-close").onclick = () => QS("#qr-modal")?.close();
@@ -123,47 +117,6 @@ window.onload = async function() {
       let prevText = btn.innerText;
       btn.innerText = "Copied!";
       setTimeout(() => { btn.innerText = prevText; }, 1800);
-    };
-  }
-
-  // Templates modal events
-  if (QS("#templates-btn")) {
-    QS("#templates-btn").onclick = () => {
-      QS("#templates-modal")?.showModal();
-    };
-  }
-  if (QS("#templates-modal-close")) {
-    QS("#templates-modal-close").onclick = () => {
-      QS("#templates-modal")?.close();
-    };
-  }
-  if (QS("#templates-modal")) {
-    QS("#templates-modal").onclick = (e) => {
-      if (e.target === QS("#templates-modal")) QS("#templates-modal").close();
-    };
-  }
-  QSS(".template-card").forEach(card => {
-    card.onclick = () => insertTemplate(card.dataset.template);
-    card.onkeydown = (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        insertTemplate(card.dataset.template);
-      }
-    };
-  });
-
-  // Font selector dropdown
-  let fontSelect = QS("#preview-font-select");
-  if (fontSelect) {
-    let savedFont = localStorage.getItem('bitty_preview_font');
-    if (savedFont && ['sans-serif', 'serif', 'monospace'].includes(savedFont)) {
-      fontSelect.value = savedFont;
-    }
-    fontSelect.onchange = () => {
-      let val = fontSelect.value;
-      localStorage.setItem('bitty_preview_font', val);
-      applyPreviewFont(val);
-      showToast(`Preview font: ${val}`);
     };
   }
 
@@ -235,10 +188,6 @@ window.onload = async function() {
       let qrModal = QS("#qr-modal");
       if (qrModal && qrModal.open) {
         qrModal.close();
-      }
-      let templatesModal = QS("#templates-modal");
-      if (templatesModal && templatesModal.open) {
-        templatesModal.close();
       }
       if (formatContent) {
         toggleFormat(false);
@@ -1087,7 +1036,7 @@ function updatePreviewOverlay(bytes) {
 
 function applyPreviewFont(fontType) {
   if (!fontType) {
-    fontType = QS("#preview-font-select")?.value || localStorage.getItem('bitty_preview_font') || 'sans-serif';
+    fontType = localStorage.getItem('bitty_preview_font') || 'sans-serif';
   }
   const fontMap = {
     'sans-serif': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

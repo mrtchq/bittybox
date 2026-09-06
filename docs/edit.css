@@ -513,52 +513,6 @@ body.format .dock-format-shelf {
   justify-content: center;
 }
 
-/* Font Selector in Dock */
-.dock-select-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-.dock-select {
-  appearance: none;
-  -webkit-appearance: none;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 9999px;
-  color: var(--text-color);
-  font-size: 12px;
-  font-weight: 500;
-  font-family: inherit;
-  padding: 0 20px 0 9px;
-  height: 32px;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  outline: none;
-}
-.dock-select:hover {
-  background: var(--dock-btn-hover);
-}
-.dock-select:focus-visible {
-  outline: 2px solid var(--text-link-color);
-  outline-offset: 1px;
-}
-.dock-select option {
-  background: var(--background-color);
-  color: var(--text-color);
-}
-.dock-select-wrap::after {
-  content: "";
-  position: absolute;
-  right: 8px;
-  width: 0;
-  height: 0;
-  border-left: 3.5px solid transparent;
-  border-right: 3.5px solid transparent;
-  border-top: 4px solid var(--text-placeholder-color);
-  pointer-events: none;
-}
-
 /* Autosave Badge in Dock */
 .dock-autosave {
   display: inline-flex;
@@ -631,6 +585,10 @@ body.format .dock-format-shelf {
 body:not(.edited) .hide-before-edit {
   opacity: 0 !important;
   pointer-events: none;
+}
+body:not(.edited) .dock-btn.hide-before-edit,
+body:not(.edited) .dock-length-badge.hide-before-edit {
+  display: none !important;
 }
 
 /* body.loaded:not(.edited) #menubar .ql-formats{
@@ -818,6 +776,9 @@ label:first-child {
     display: none;
   }
   .dock-segment-craft .dock-btn-label {
+    display: none;
+  }
+  .dock-autosave-text {
     display: none;
   }
   .dock-btn {
@@ -1442,61 +1403,4 @@ body:not(.preview) #preview-overlay {
 }
 .autosave-status.saving {
   color: var(--selected-text-color);
-}
-
-/* Templates Modal */
-dialog.templates-modal {
-  width: 540px;
-  max-width: calc(100vw - 32px);
-}
-
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-  margin-top: 4px;
-}
-
-.template-card {
-  border: 1px solid var(--divider-color);
-  border-radius: 8px;
-  padding: 12px 14px;
-  cursor: pointer;
-  background: transparent;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-  outline: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.template-card:hover,
-.template-card:focus-visible {
-  background: rgba(128, 128, 128, 0.08);
-  border-color: var(--text-color);
-  transform: translateY(-1px);
-}
-
-.template-card-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.template-icon {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.template-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.template-desc {
-  font-size: 12px;
-  line-height: 1.4;
-  color: var(--text-placeholder-color);
-  margin: 6px 0 0 0;
-  text-align: left;
 }
