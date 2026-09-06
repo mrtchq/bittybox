@@ -1307,12 +1307,20 @@ body:not(.preview) #preview-overlay {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: width 0.2s ease, padding 0.2s ease, border-radius 0.2s ease, box-shadow 0.2s ease;
 }
 
 .preview-overlay-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+}
+
+.preview-overlay-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .preview-overlay-title {
@@ -1321,12 +1329,74 @@ body:not(.preview) #preview-overlay {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-placeholder-color);
+  white-space: nowrap;
 }
 
 .preview-overlay-bytes {
   font-size: 12px;
   font-weight: 700;
   color: var(--text-color);
+  white-space: nowrap;
+}
+
+.preview-overlay-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-placeholder-color);
+  cursor: pointer;
+  padding: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.preview-overlay-toggle-btn:hover {
+  color: var(--text-color);
+  background: var(--dock-btn-hover);
+}
+
+.preview-overlay-toggle-btn:focus-visible {
+  outline: 2px solid var(--selected-text-color, #D42A20);
+  outline-offset: 1px;
+}
+
+.preview-overlay-card .preview-overlay-icon-max {
+  display: none;
+}
+
+.preview-overlay-card .preview-overlay-icon-min {
+  display: block;
+}
+
+/* Minimized State */
+.preview-overlay-card.minimized {
+  width: auto;
+  max-width: 260px;
+  padding: 6px 12px;
+  gap: 0;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.preview-overlay-card.minimized:hover {
+  border-color: var(--text-placeholder-color);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.preview-overlay-card.minimized .preview-overlay-meter,
+.preview-overlay-card.minimized .preview-overlay-warning {
+  display: none !important;
+}
+
+.preview-overlay-card.minimized .preview-overlay-icon-min {
+  display: none;
+}
+
+.preview-overlay-card.minimized .preview-overlay-icon-max {
+  display: block;
 }
 
 .preview-overlay-meter {

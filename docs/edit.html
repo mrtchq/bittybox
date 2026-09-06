@@ -33,10 +33,21 @@
 <body>
 <iframe class="hide-before-edit" id="preview-frame"></iframe>
 <div id="preview-overlay" class="preview-overlay">
-  <div class="preview-overlay-card">
+  <div id="preview-overlay-card" class="preview-overlay-card">
     <div class="preview-overlay-header">
       <span class="preview-overlay-title">Preview URL Size</span>
-      <span id="preview-overlay-bytes" class="preview-overlay-bytes">0 bytes</span>
+      <div class="preview-overlay-controls">
+        <span id="preview-overlay-bytes" class="preview-overlay-bytes">0 bytes</span>
+        <button type="button" id="preview-overlay-toggle" class="preview-overlay-toggle-btn" title="Minimize preview URL size" aria-label="Minimize preview URL size" aria-expanded="true">
+          <svg class="preview-overlay-icon-min" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <svg class="preview-overlay-icon-max" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="preview-overlay-meter">
       <div id="preview-overlay-bar" class="preview-overlay-bar"></div>

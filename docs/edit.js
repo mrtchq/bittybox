@@ -130,6 +130,36 @@ window.onload = async function() {
     });
   }
 
+  // Preview overlay minimize controls & saved state restore
+  let overlayToggleBtn = QS("#preview-overlay-toggle");
+  let overlayCard = QS("#preview-overlay-card") || QS(".preview-overlay-card");
+  if (overlayToggleBtn) {
+    overlayToggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      togglePreviewOverlayMinimized();
+    });
+  }
+  if (overlayCard) {
+    overlayCard.addEventListener("click", (e) => {
+      if (overlayCard.classList.contains("minimized")) {
+        setPreviewOverlayMinimized(false);
+      }
+    });
+    overlayCard.addEventListener("keydown", (e) => {
+      if (overlayCard.classList.contains("minimized") && (e.key === "Enter" || e.key === " ")) {
+        if (e.target !== overlayToggleBtn) {
+          e.preventDefault();
+          setPreviewOverlayMinimized(false);
+        }
+      }
+    });
+  }
+  try {
+    if (localStorage.getItem(OVERLAY_MINIMIZED_KEY) === "true") {
+      setPreviewOverlayMinimized(true);
+    }
+  } catch (e) {}
+
   // Theme switcher button
   let themeBtn = QS("#theme-btn");
   if (themeBtn) {
@@ -1032,6 +1062,45 @@ function updatePreviewOverlay(bytes) {
     warningEl.className = 'preview-overlay-warning danger';
     warningEl.innerHTML = '&#9888; High byte count! URLs &gt;4KB may truncate on mobile browsers or QR codes';
   }
+}
+
+const OVERLAY_MINIMIZED_KEY = 'bitty_preview_overlay_minimized';
+
+function setPreviewOverlayMinimized(minimized) {
+  let card = QS("#preview-overlay-card") || QS(".preview-overlay-card");
+  let toggleBtn = QS("#preview-overlay-toggle");
+  if (!card) return;
+
+  if (minimized) {
+    card.classList.add("minimized");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
+    card.setAttribute("title", "Click to expand preview URL size");
+    if (toggleBtn) {
+      toggleBtn.title = "Expand preview URL size";
+      toggleBtn.setAttribute("aria-label", "Expand preview URL size");
+      toggleBtn.setAttribute("aria-expanded", "false");
+    }
+  } else {
+    card.classList.remove("minimized");
+    card.removeAttribute("tabindex");
+    card.removeAttribute("role");
+    card.removeAttribute("title");
+    if (toggleBtn) {
+      toggleBtn.title = "Minimize preview URL size";
+      toggleBtn.setAttribute("aria-label", "Minimize preview URL size");
+      toggleBtn.setAttribute("aria-expanded", "true");
+    }
+  }
+  try {
+    localStorage.setItem(OVERLAY_MINIMIZED_KEY, minimized ? "true" : "false");
+  } catch (e) {}
+}
+
+function togglePreviewOverlayMinimized() {
+  let card = QS("#preview-overlay-card") || QS(".preview-overlay-card");
+  if (!card) return;
+  setPreviewOverlayMinimized(!card.classList.contains("minimized"));
 }
 
 function applyPreviewFont(fontType) {
