@@ -1,24 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, viewport-fit=cover">
-<title>Bitty Box</title>
-<meta name="description" content="Create self-contained websites and apps encoded entirely inside a link URL fragment.">
-<meta property="og:title" content="Bitty Box">
-<meta property="og:description" content="Create self-contained websites and apps encoded entirely inside a link URL fragment.">
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" id="favicon">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/index.css" inline>
-<meta name="theme-color" content="#FCCD84">
-<meta id="themeColor" name="theme-color" content="#FCCD84" media="(prefers-color-scheme: light)">
-<meta id="themeColorDark" name="theme-color" content="#FCCD84" media="(prefers-color-scheme: dark)">
-<script type="module" src="/bitty.js" inline></script>
-<script type="module" src="/index.js" inline></script>
-<script nomodule> location.href = "/v1/" + location.hash </script>
-<noscript>Bitty Box requires JavaScript.</noscript>
-</head>
+<!doctype html>
+<html lang="en" class="dark" data-theme="monochrome">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Bitty Box &bull; Built for AI Agents &bull; Humans Welcome</title>
+    <meta name="description" content="Bitty Box encodes full HTML, markdown, and interactive apps into compressed URL fragments. Built for autonomous AI agents, LLM toolchains, and human creators." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <meta property="og:title" content="Bitty Box &bull; Built for AI Agents &bull; Humans Welcome" />
+    <meta property="og:description" content="Encode entire webpages into compressed URL fragments. Built for autonomous AI agents and human creators." />
+    <meta property="og:image" content="https://bittybox.org/bittybox-logo.png" />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0d0419" />
+    <script type="module" crossorigin src="/assets/index-CBGL8vbz.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Be9FdmBD.css">
+  </head>
+  <body class="bg-[#090314] text-cyan-100 antialiased overflow-x-hidden selection:bg-fuchsia-500 selection:text-white">
+    <div id="root"></div>
+    <script>
+      (function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.answerly.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('3c4bb44a-bf4b-47c5-afb4-06ad06033638');
+    </script>
+    <script>
+      !function (t, e, c, n) {
+          var s = e.createElement(c);
+          s.async = 1, s.src = 'https://scripts.claspo.io/scripts/' + n + '.js';
+          var r = e.scripts[0];
+          r.parentNode.insertBefore(s, r);
+          var f = function () {
+              f.c(arguments);
+          };
+          f.q = [];
+          f.c = function () {
+              f.q.push(arguments);
+          };
+          t['claspo'] = t['claspo'] || f;
+      }(window, document, 'script', '47141298BFC642CEBA85862D44D6D303');
+    </script>
+    <script>claspo('init');</script>
+  </body>
 </html>

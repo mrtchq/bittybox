@@ -1,23 +1,12 @@
 {
-  "short_name": "Bitty Box",
   "name": "Bitty Box",
-  "description": "Bitty Box",
+  "short_name": "BittyBox",
+  "description": "Whole Webpages in a URL - Zero Server Persistence",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090314",
+  "theme_color": "#0d0419",
   "icons": [
-    {
-      "src": "/favicon.svg",
-      "type": "image/svg+xml",
-      "sizes": "any"
-    },
-    {
-      "src": "/favicon-32x32.png",
-      "type": "image/png",
-      "sizes": "32x32"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "type": "image/png",
-      "sizes": "180x180"
-    },
     {
       "src": "/icon-192.png",
       "type": "image/png",
@@ -29,20 +18,16 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
-    }
-  ],
-  "start_url": "/edit",
-  "background_color": "#FCCD84",
-  "display": "browser",
-  "scope": "/",
-  "theme_color": "#FCCD84",
-  "shortcuts": [
+    },
     {
-      "name": "New",
-      "short_name": "New Site",
-      "description": "New Site",
-      "url": "/edit",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+      "src": "/bittybox-logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
     }
   ]
 }
