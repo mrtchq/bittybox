@@ -66,56 +66,98 @@
 <div id="editor"></div>
 </div>
 
-<div class="toolbar" id="menubar">
-  <div class="toolbar hide-before-edit" id="formatbar">
-    <div class="menu-item" id="format-toggle" title="Toggle formatting toolbar">Aa</div>
-    <span class="ql-formats">
-      <button class="ql-bold" title="Bold"></button>
-      <button class="ql-italic" title="Italic"></button>
-      <select class="ql-header" id="ql-header">HX</select>
-      <select class="ql-color"><option value="#F6D4D2"/><option value="#FAE4D3"/><option value="#FEF3D5"/><option value="#CFE8DC"/><option value="#CFE0E8"/><option value="#E1D7E8"/><option value="white"/><option value="#E99590"/><option value="#F3BB92"/><option value="#FDE095"/><option value="#86C6A8"/><option value="#86B1C6"/><option value="#B39BC6"/><option value="#A4A4A4"/><option value="#D42A20"/><option value="#E77625"/><option value="#FAC22B"/><option value="#0E8E51"/><option value="#0E638E"/><option value="#67378D"/><option value="#727272"/><option value="#BF0000"/><option value="#DB3F00"/><option value="#F8A600"/><option value="#005E12"/><option value="#00275E"/><option value="#2C005C"/><option value="#3D3D3D"/><option value="#860000"/><option value="#943E00"/><option value="#AE7400"/><option value="#00420D"/><option value="#001B42"/><option value="#1F0040"/><option value="black"/></select>
-      <select class="ql-background"><option value="#F6D4D2"/><option value="#FAE4D3"/><option value="#FEF3D5"/><option value="#CFE8DC"/><option value="#CFE0E8"/><option value="#E1D7E8"/><option value="white"/><option value="#E99590"/><option value="#F3BB92"/><option value="#FDE095"/><option value="#86C6A8"/><option value="#86B1C6"/><option value="#B39BC6"/><option value="#A4A4A4"/><option value="#D42A20"/><option value="#E77625"/><option value="#FAC22B"/><option value="#0E8E51"/><option value="#0E638E"/><option value="#67378D"/><option value="#727272"/><option value="#BF0000"/><option value="#DB3F00"/><option value="#F8A600"/><option value="#005E12"/><option value="#00275E"/><option value="#2C005C"/><option value="#3D3D3D"/><option value="#860000"/><option value="#943E00"/><option value="#AE7400"/><option value="#00420D"/><option value="#001B42"/><option value="#1F0040"/><option value="black"/></select>
-      <button class="ql-clean" title="Clear formatting"></button>
-    </span>
-    <span class="ql-formats">
-      <button class="ql-code-block" title="Code block"></button>
-      <button class="ql-link" title="Insert link"></button>
-      <select class="ql-align" title="Text align"></select>
-      <button type="button" class="ql-list" value="bullet" title="Bullet list"></button>
-      <button type="button" class="ql-list" value="ordered" title="Numbered list"></button>
-      <button class="ql-indent" value="-1" title="Outdent"></button>
-      <button class="ql-indent" value="+1" title="Indent"></button>
-    </span>
-    <button type="button" id="templates-btn" class="formatbar-btn" title="Starter HTML boilerplate templates">Templates</button>
-    <button type="button" id="format-code-btn" class="formatbar-btn" title="Auto-indent & format code (Ctrl+S)">Auto-indent</button>
-    <button type="button" id="preview-toggle-btn" class="formatbar-btn" title="Toggle preview">Preview</button>
-    <div class="formatbar-select-wrap" title="Preview font family">
-      <select id="preview-font-select" class="formatbar-select" aria-label="Preview Font Family">
-        <option value="sans-serif">Sans-serif</option>
-        <option value="serif">Serif</option>
-        <option value="monospace">Monospace</option>
-      </select>
+<div class="dock-wrapper" id="dock-container">
+  <!-- Expandable Rich Text Formatting Shelf -->
+  <div id="dock-format-shelf" class="dock-format-shelf" aria-label="Rich Text Formatting Toolbar">
+    <div class="toolbar" id="formatbar">
+      <span class="ql-formats">
+        <button class="ql-bold" title="Bold (Ctrl+B)"></button>
+        <button class="ql-italic" title="Italic (Ctrl+I)"></button>
+        <select class="ql-header" id="ql-header" title="Heading level">HX</select>
+        <select class="ql-color" title="Text color"><option value="#F6D4D2"/><option value="#FAE4D3"/><option value="#FEF3D5"/><option value="#CFE8DC"/><option value="#CFE0E8"/><option value="#E1D7E8"/><option value="white"/><option value="#E99590"/><option value="#F3BB92"/><option value="#FDE095"/><option value="#86C6A8"/><option value="#86B1C6"/><option value="#B39BC6"/><option value="#A4A4A4"/><option value="#D42A20"/><option value="#E77625"/><option value="#FAC22B"/><option value="#0E8E51"/><option value="#0E638E"/><option value="#67378D"/><option value="#727272"/><option value="#BF0000"/><option value="#DB3F00"/><option value="#F8A600"/><option value="#005E12"/><option value="#00275E"/><option value="#2C005C"/><option value="#3D3D3D"/><option value="#860000"/><option value="#943E00"/><option value="#AE7400"/><option value="#00420D"/><option value="#001B42"/><option value="#1F0040"/><option value="black"/></select>
+        <select class="ql-background" title="Background color"><option value="#F6D4D2"/><option value="#FAE4D3"/><option value="#FEF3D5"/><option value="#CFE8DC"/><option value="#CFE0E8"/><option value="#E1D7E8"/><option value="white"/><option value="#E99590"/><option value="#F3BB92"/><option value="#FDE095"/><option value="#86C6A8"/><option value="#86B1C6"/><option value="#B39BC6"/><option value="#A4A4A4"/><option value="#D42A20"/><option value="#E77625"/><option value="#FAC22B"/><option value="#0E8E51"/><option value="#0E638E"/><option value="#67378D"/><option value="#727272"/><option value="#BF0000"/><option value="#DB3F00"/><option value="#F8A600"/><option value="#005E12"/><option value="#00275E"/><option value="#2C005C"/><option value="#3D3D3D"/><option value="#860000"/><option value="#943E00"/><option value="#AE7400"/><option value="#00420D"/><option value="#001B42"/><option value="#1F0040"/><option value="black"/></select>
+        <button class="ql-clean" title="Clear formatting"></button>
+      </span>
+      <span class="dock-shelf-divider"></span>
+      <span class="ql-formats">
+        <button class="ql-code-block" title="Code block"></button>
+        <button class="ql-link" title="Insert link"></button>
+        <select class="ql-align" title="Text alignment"></select>
+        <button type="button" class="ql-list" value="bullet" title="Bullet list"></button>
+        <button type="button" class="ql-list" value="ordered" title="Numbered list"></button>
+        <button class="ql-indent" value="-1" title="Outdent"></button>
+        <button class="ql-indent" value="+1" title="Indent"></button>
+      </span>
     </div>
   </div>
 
-  <div class="toolbar-right">
-    <span id="autosave-status" class="autosave-status" title="Draft auto-saved every 30s">Saved</span>
-    <button type="button" id="theme-btn" class="toolbar-action-btn" title="Toggle theme (Light / Dark)" aria-label="Toggle Light or Dark theme">
-      <span id="theme-icon" class="theme-icon">&#9790;</span><span id="theme-text">Dark</span>
-    </button>
-    <button type="button" id="qr-btn" class="hide-before-edit toolbar-action-btn" title="Generate QR code for mobile sharing">QR Code</button>
-    <div class="recent-wrapper">
-      <button type="button" id="recent-btn" class="toolbar-action-btn" title="Recently edited projects">Recent</button>
-      <div id="recent-popover" class="recent-popover" style="display: none;">
-        <div class="recent-header">
-          <span class="recent-title-heading">Recently Edited</span>
-          <button type="button" id="clear-recent-btn" class="recent-clear-btn" title="Clear recent history">Clear</button>
-        </div>
-        <ul id="recent-list" class="recent-list"></ul>
+  <!-- Innovative Floating Dock Island -->
+  <nav class="dock-bar" id="menubar" aria-label="Editor actions dock">
+    <!-- Group 1: Code & Content Creation -->
+    <div class="dock-segment dock-segment-craft">
+      <button type="button" id="format-toggle" class="dock-btn" title="Toggle rich text formatting shelf" aria-label="Toggle rich text formatting shelf" aria-expanded="false">
+        <span class="dock-aa-icon">Aa</span>
+        <span class="dock-btn-label">Format</span>
+      </button>
+      <button type="button" id="templates-btn" class="dock-btn" title="Starter HTML boilerplate templates" aria-label="Starter HTML templates">
+        <svg class="dock-svg-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        <span class="dock-btn-label">Templates</span>
+      </button>
+      <button type="button" id="format-code-btn" class="dock-btn" title="Auto-indent & format code (Ctrl+S)" aria-label="Auto-indent code">
+        <svg class="dock-svg-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span class="dock-btn-label">Auto-indent</span>
+      </button>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <!-- Group 2: View & Preview -->
+    <div class="dock-segment dock-segment-view">
+      <button type="button" id="preview-toggle-btn" class="dock-btn" title="Toggle live preview split screen" aria-label="Toggle live preview">
+        <svg class="dock-svg-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="dock-btn-label" id="preview-btn-text">Preview</span>
+      </button>
+      <div class="dock-select-wrap" title="Preview font family">
+        <select id="preview-font-select" class="dock-select" aria-label="Preview Font Family">
+          <option value="sans-serif">Sans-serif</option>
+          <option value="serif">Serif</option>
+          <option value="monospace">Mono</option>
+        </select>
       </div>
     </div>
-    <div id="length" class="hide-before-edit menu-item" title="Open project link"></div>
-  </div>
+
+    <div class="dock-divider"></div>
+
+    <!-- Group 3: Status, Sharing & Utilities -->
+    <div class="dock-segment dock-segment-utils">
+      <div id="autosave-status" class="dock-autosave" title="Draft auto-saved every 30s">
+        <span class="dock-pulse-dot"></span>
+        <span id="autosave-text" class="dock-autosave-text">Saved</span>
+      </div>
+      <button type="button" id="theme-btn" class="dock-btn" title="Toggle theme (Light / Dark)" aria-label="Toggle Light or Dark theme">
+        <span id="theme-icon" class="dock-theme-icon">&#9790;</span>
+        <span id="theme-text" class="dock-btn-label">Dark</span>
+      </button>
+      <button type="button" id="qr-btn" class="dock-btn hide-before-edit" title="Generate QR code for mobile sharing" aria-label="QR Code">
+        <svg class="dock-svg-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="dock-btn-label">QR</span>
+      </button>
+      <div class="recent-wrapper">
+        <button type="button" id="recent-btn" class="dock-btn" title="Recently edited projects" aria-label="Recent projects">
+          <svg class="dock-svg-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="dock-btn-label">Recent</span>
+        </button>
+        <div id="recent-popover" class="recent-popover" style="display: none;">
+          <div class="recent-header">
+            <span class="recent-title-heading">Recently Edited</span>
+            <button type="button" id="clear-recent-btn" class="recent-clear-btn" title="Clear recent history">Clear</button>
+          </div>
+          <ul id="recent-list" class="recent-list"></ul>
+        </div>
+      </div>
+      <div id="length" class="dock-length-badge hide-before-edit" title="Click to open project link in new window" role="button" tabindex="0"></div>
+    </div>
+  </nav>
 </div>
 
 <dialog id="templates-modal" class="bitty-modal templates-modal">

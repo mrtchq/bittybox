@@ -240,6 +240,9 @@ window.onload = async function() {
       if (templatesModal && templatesModal.open) {
         templatesModal.close();
       }
+      if (formatContent) {
+        toggleFormat(false);
+      }
     }
   });
 
@@ -615,13 +618,27 @@ function togglePreview(flag) {
   let previewBtn = QS("#preview-toggle-btn");
   if (previewBtn) {
     previewBtn.classList.toggle("active", previewContent);
-    previewBtn.innerText = previewContent ? "Edit" : "Preview";
+    let previewText = QS("#preview-btn-text");
+    if (previewText) {
+      previewText.innerText = previewContent ? "Edit" : "Preview";
+    } else {
+      previewBtn.innerText = previewContent ? "Edit" : "Preview";
+    }
   }
 }
 let formatContent = false;
 function toggleFormat(flag) {
-  formatContent = !formatContent;
+  if (typeof flag === 'boolean') {
+    formatContent = flag;
+  } else {
+    formatContent = !formatContent;
+  }
   document.body.classList.toggle("format", formatContent);
+  let toggleBtn = QS("#format-toggle");
+  if (toggleBtn) {
+    toggleBtn.classList.toggle("active", formatContent);
+    toggleBtn.setAttribute("aria-expanded", String(formatContent));
+  }
 }
 
 let toastTimeout;
