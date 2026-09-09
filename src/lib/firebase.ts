@@ -19,19 +19,19 @@ import {
 import { BittyUser } from '../types';
 import { safeGoogleAuthReturn } from '../utils/firebaseAuthFlow';
 
-const requiredEnv = (key: string): string => {
+const getFirebaseEnv = (key: string, fallback: string = ''): string => {
   const value = import.meta.env[key];
-  if (!value) {
-    throw new Error(`Missing required Firebase config: ${key}`);
+  if (value && typeof value === 'string' && !value.startsWith('YOUR_FIREBASE_')) {
+    return value;
   }
-  return value;
+  return fallback;
 };
 
 const firebaseConfig = {
-  projectId: requiredEnv('VITE_FIREBASE_PROJECT_ID'),
-  appId: requiredEnv('VITE_FIREBASE_APP_ID'),
-  apiKey: requiredEnv('VITE_FIREBASE_API_KEY'),
-  authDomain: requiredEnv('VITE_FIREBASE_AUTH_DOMAIN'),
+  projectId: getFirebaseEnv('VITE_FIREBASE_PROJECT_ID', 'bitty-box-project'),
+  appId: getFirebaseEnv('VITE_FIREBASE_APP_ID', '1:123456789:web:bittyboxapplet'),
+  apiKey: getFirebaseEnv('VITE_FIREBASE_API_KEY', 'AIzaSyDemoApiKeyForBittyBoxWorkspace'),
+  authDomain: getFirebaseEnv('VITE_FIREBASE_AUTH_DOMAIN', 'bitty-box-project.firebaseapp.com'),
   firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID || '(default)',
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',

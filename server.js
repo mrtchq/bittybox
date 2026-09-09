@@ -47,12 +47,13 @@ import { runTextConversation, executeTextAgentTool, actionRegistryHealth } from 
 import { getProposal, selectProposal, saveAssessmentAnswer, getConversationState } from './lib/ai-proposal-store.js';
 import { executeApprovedProposal } from './lib/ai-live-executor.js';
 import { appendAiAudit } from './lib/ai-audit-store.js';
+import { createServer as createViteServer } from 'vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3012;
+const PORT = 3000;
 const DIST_DIR = path.join(__dirname, 'dist');
 
 // Disable x-powered-by header
@@ -1672,30 +1673,38 @@ app.get('/api/bitty/formats', (_req, res) => {
 app.use('/api/agentic-boxes', createAgenticBoxRouter());
 
 // ==========================================
-// Static Assets & SPA Serving
+// Vite Dev Middleware / Static Assets & SPA Serving
 // ==========================================
-app.use(express.static(DIST_DIR, {
-  maxAge: '1y',
-  immutable: true,
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+if (process.env.NODE_ENV !== 'production') {
+  const vite = await createViteServer({
+    server: { middlewareMode: true, host: '0.0.0.0', port: PORT },
+    appType: 'spa',
+  });
+  app.use(vite.middlewares);
+} else {
+  app.use(express.static(DIST_DIR, {
+    maxAge: '1y',
+    immutable: true,
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      }
     }
-  }
-}));
+  }));
 
-// SPA Fallback: All unmatched GET requests serve index.html
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(DIST_DIR, 'index.html'));
-});
+  // SPA Fallback: All unmatched GET requests serve index.html
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+}
 
 // Start Server
 const server = http.createServer(app);
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`[bittybox] Production server listening on http://127.0.0.1:${PORT}`);
-  console.log(`[bittybox] Serving static SPA bundle from ${DIST_DIR}`);
-  console.log(`[bittybox] MCP Server (Streamable HTTP): http://127.0.0.1:${PORT}/mcp`);
-  console.log(`[bittybox] REST API: http://127.0.0.1:${PORT}/api/bitty/create`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`[bittybox] Server listening on http://0.0.0.0:${PORT}`);
+  console.log(`[bittybox] Mode: ${process.env.NODE_ENV === 'production' ? 'production (static dist)' : 'development (vite middleware)'}`);
+  console.log(`[bittybox] MCP Server (Streamable HTTP): http://0.0.0.0:${PORT}/mcp`);
+  console.log(`[bittybox] REST API: http://0.0.0.0:${PORT}/api/bitty/create`);
   console.log(`[bittybox] Voice AI: /api/voice-assistant/ask (REST) · /api/voice-token (Realtime) · available=${voiceAvailable()}`);
 });
