@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#090806" />
+  <meta name="description" content="Build playful, URL-native Bitty Boxes with no upload and no account." />
+  <title>Bitty Box — Phase 1 Lab</title>
+</head>
+<body>
+  <main id="creator" class="phase-shell">
+    <header class="phase-topbar"><a href="/lab/v2/" class="brand">BITTY BOX</a><span class="phase-badge">PHASE 1 • URL MAGIC</span></header>
+    <section class="hero"><p class="eyebrow">TINY, ALIVE, SELF-CONTAINED</p><h1>Make a Box misbehave.</h1><p>Everything is sealed into a shareable URL. No upload. No account. No server memory.</p></section>
+    <section class="composer" aria-label="Phase 1 Box creator">
+      <div class="field-grid">
+        <label>Title<input id="box-title" maxlength="80" value="The tiny impossible box" /></label>
+        <label>Theme<select id="box-theme"><option value="obsidian-gold">Obsidian gold</option><option value="midnight-violet">Midnight violet</option><option value="cinder-rose">Cinder rose</option><option value="emerald-arcade">Emerald arcade</option></select></label>
+      </div>
+      <label>What lives inside?<textarea id="box-content" rows="6">A tiny message that gets stranger when you come back.</textarea></label>
+
+      <div class="control-grid">
+        <section class="control-card"><p class="eyebrow">LOCK</p><label>Lock kind<select id="lock-kind"><option value="magic">Magic word</option><option value="puzzle">Puzzle</option><option value="freeze">Freeze mode</option><option value="identity">Identity bound</option><option value="multi">Multi-key</option></select></label><div id="lock-fields"></div><button id="add-lock" type="button" class="quiet">ADD LOCK</button><div id="lock-list" class="chips"></div></section>
+        <section class="control-card"><p class="eyebrow">MUTATE</p><label>Trigger<select id="mutation-trigger"><option value="visits">Visits</option><option value="afterMinutes">Minutes elapsed</option><option value="unlocks">Unlocks</option></select></label><label>At<input id="mutation-threshold" type="number" min="1" value="2" /></label><label>Action<select id="mutation-action"><option value="appendText">Add a whisper</option><option value="replaceText">Rewrite text</option><option value="shiftTheme">Shift color</option><option value="distort">Distort</option><option value="heal">Heal</option><option value="updatePayload">Mutate payload</option></select></label><label>Detail<input id="mutation-detail" value="It remembers your return." /></label><button id="add-mutation" type="button" class="quiet">ADD MUTATION</button><div id="mutation-list" class="chips"></div></section>
+        <section class="control-card"><p class="eyebrow">PAYLOAD</p><label>Kind<select id="payload-kind"><option value="text">Text note</option><option value="key">Key</option><option value="token">Token</option><option value="json">Mini JSON</option></select></label><label>Hidden object<input id="payload-value" value="A small gold secret." /></label><button id="add-payload" type="button" class="quiet">PACK PAYLOAD</button><div id="payload-list" class="chips"></div></section>
+      </div>
+      <label class="burn-toggle"><input id="burn-after-reading" type="checkbox" /> <span>Burn after reading <em>— turns into ashes after a short viewing fuse</em></span></label>
+      <div class="actions"><button id="mystery-box" class="quiet" type="button">🎲 MYSTERY BOX</button><button id="seal-box" class="primary" type="button">SEAL INTO URL ✦</button></div>
+      <p id="creator-status" class="status" aria-live="polite"></p>
+      <section id="result" class="result" hidden><p class="eyebrow">SEALED</p><h2>Your Box is a URL.</h2><textarea id="result-url" readonly rows="4"></textarea><div class="actions"><button id="copy-url" class="quiet" type="button">COPY URL</button><button id="open-url" class="primary" type="button">OPEN BOX</button></div></section>
+    </section>
+    <section id="phase1-gallery" class="gallery" aria-labelledby="gallery-title"><p class="eyebrow">THE TOY SHELF</p><h2 id="gallery-title">Nine ways a Box can surprise.</h2><div id="gallery-cards"></div></section>
+  </main>
+  <main id="visitor" class="visitor-shell" hidden><header class="phase-topbar"><a href="/lab/v2/phase1.html" class="brand">BITTY BOX</a><span id="visitor-status" class="phase-badge"></span></header><section id="visitor-card" class="visitor-card" aria-live="polite"></section></main>
+  <script type="module" src="/src/phase1App.ts"></script>
+</body>
+</html>

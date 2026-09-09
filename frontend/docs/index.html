@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" class="dark" data-theme="monochrome">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Bitty Box &bull; Built for AI Agents &bull; Humans Welcome</title>
+    <meta name="description" content="Bitty Box encodes full HTML, markdown, and interactive apps into compressed URL fragments. Built for autonomous AI agents, LLM toolchains, and human creators." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <meta property="og:title" content="Bitty Box &bull; Built for AI Agents &bull; Humans Welcome" />
+    <meta property="og:description" content="Encode entire webpages into compressed URL fragments. Built for autonomous AI agents and human creators." />
+    <meta property="og:image" content="https://bittybox.org/bittybox-logo.png" />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <!-- Dynamic browser chrome theme: follows scroll position from gold to black. -->
+    <meta name="theme-color" content="#d3b483" />
+    <meta name="msapplication-navbutton-color" content="#d3b483" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#d3b483" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1a1a" />
+    <script>
+      (() => {
+        const gradientStops = [
+          { pos: 0.00, color: '#d3b483' },
+          { pos: 0.35, color: '#c29a5f' },
+          { pos: 0.70, color: '#2b2b33' },
+          { pos: 1.00, color: '#000000' },
+        ];
+
+        const hexToRgb = (hex) => {
+          const value = hex.replace('#', '');
+          const normalized = value.length === 3
+            ? value.split('').map((part) => part + part).join('')
+            : value;
+          const number = parseInt(normalized, 16);
+          return { r: (number >> 16) & 255, g: (number >> 8) & 255, b: number & 255 };
+        };
+
+        const rgbToHex = (r, g, b) => `#${[r, g, b]
+          .map((value) => value.toString(16).padStart(2, '0')).join('')}`;
+
+        const lerpColor = (first, second, amount) => {
+          const a = hexToRgb(first);
+          const b = hexToRgb(second);
+          return rgbToHex(
+            Math.round(a.r + (b.r - a.r) * amount),
+            Math.round(a.g + (b.g - a.g) * amount),
+            Math.round(a.b + (b.b - a.b) * amount),
+          );
+        };
+
+        const getGradientColor = (progress) => {
+          if (progress <= gradientStops[0].pos) return gradientStops[0].color;
+          if (progress >= gradientStops[gradientStops.length - 1].pos) return gradientStops[gradientStops.length - 1].color;
+          for (let index = 0; index < gradientStops.length - 1; index += 1) {
+            const first = gradientStops[index];
+            const second = gradientStops[index + 1];
+            if (progress >= first.pos && progress <= second.pos) {
+              return lerpColor(first.color, second.color, (progress - first.pos) / (second.pos - first.pos));
+            }
+          }
+          return gradientStops[0].color;
+        };
+
+        const updateThemeColor = () => {
+          const scrollTop = window.scrollY || window.pageYOffset || 0;
+          const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = documentHeight > 0 ? Math.min(Math.max(scrollTop / documentHeight, 0), 1) : 0;
+          const color = getGradientColor(progress);
+          document.querySelectorAll('meta[name="theme-color"], meta[name="msapplication-navbutton-color"]')
+            .forEach((meta) => meta.setAttribute('content', color));
+        };
+
+        let ticking = false;
+        const onScroll = () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              updateThemeColor();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+          updateThemeColor();
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', updateThemeColor);
+        });
+      })();
+    </script>
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/stars.css">
+    <script type="module" crossorigin src="/assets/index-C67Nj7kL.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-mX86w3UG.css">
+  </head>
+  <body class="bg-[#090314] text-cyan-100 antialiased overflow-x-hidden selection:bg-fuchsia-500 selection:text-white">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+    <div id="title">
+      <span>BITTYBOX</span>
+    </div>
+    <div id="root"></div>
+    <script>
+      (function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.answerly.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('3c4bb44a-bf4b-47c5-afb4-06ad06033638');
+    </script>
+    <script>
+      !function (t, e, c, n) {
+          var s = e.createElement(c);
+          s.async = 1, s.src = 'https://scripts.claspo.io/scripts/' + n + '.js';
+          var r = e.scripts[0];
+          r.parentNode.insertBefore(s, r);
+          var f = function () {
+              f.c(arguments);
+          };
+          f.q = [];
+          f.c = function () {
+              f.q.push(arguments);
+          };
+          t['claspo'] = t['claspo'] || f;
+      }(window, document, 'script', '47141298BFC642CEBA85862D44D6D303');
+    </script>
+    <script>claspo('init');</script>
+  </body>
+</html>

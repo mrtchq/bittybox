@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "staging": "bitty-box-app",
+    "default": "bitty-box-app"
+  }
+}

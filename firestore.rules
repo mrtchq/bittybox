@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User profile document: authenticated users can read and write their own document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // User's saved micro-sites / boxes subcollection
+      match /boxes/{boxId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // User's logic chains subcollection
+      match /chains/{chainId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // User's capsules subcollection
+      match /capsules/{capsuleId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

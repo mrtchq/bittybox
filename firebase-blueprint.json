@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "users": {
+      "description": "User profiles, credit balances, preferences, and agent API keys",
+      "fields": {
+        "id": { "type": "string", "description": "User ID matching Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email address" },
+        "displayName": { "type": "string", "description": "User callsign or display name" },
+        "avatar": { "type": "string", "description": "Avatar icon or photo URL" },
+        "tier": { "type": "string", "description": "User subscription tier (e.g. FREE TIER, PRO BUILDER)" },
+        "credits": { "type": "number", "description": "Current available credits balance" },
+        "creditsUsedTotal": { "type": "number", "description": "Total credits used" },
+        "creditsHumanUsed": { "type": "number", "description": "Credits spent on UI actions" },
+        "creditsApiUsed": { "type": "number", "description": "Credits spent via API keys" },
+        "creditsMcpUsed": { "type": "number", "description": "Credits spent via MCP calls" },
+        "joinedDate": { "type": "string", "description": "ISO timestamp when account was registered" },
+        "lastSignedInAt": { "type": "string", "description": "ISO timestamp of last sign in" },
+        "authProvider": { "type": "string", "description": "Auth provider used (e.g. google, passwordless)" },
+        "settings": { "type": "map", "description": "User preferences and device trust settings" },
+        "apiKeys": { "type": "array", "description": "List of active/revoked agent API key metadata" },
+        "transactions": { "type": "array", "description": "Credit history and purchase transactions" }
+      }
+    },
+    "users/{userId}/boxes": {
+      "description": "Saved micro-sites and bitty boxes created or tracked by the user",
+      "fields": {
+        "id": { "type": "string", "description": "Unique Box ID" },
+        "userId": { "type": "string", "description": "Owner UID" },
+        "title": { "type": "string", "description": "Title of the micro-site" },
+        "url": { "type": "string", "description": "Self-contained encoded URL" },
+        "format": { "type": "string", "description": "Content format (html, markdown, canvas, etc.)" },
+        "byteSize": { "type": "number", "description": "Raw uncompressed payload size" },
+        "compressedSize": { "type": "number", "description": "Compressed payload size" },
+        "encrypted": { "type": "boolean", "description": "Whether payload is client-encrypted" },
+        "locks": { "type": "map", "description": "Password, time window, or access limits configured" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp of last update" }
+      }
+    },
+    "users/{userId}/chains": {
+      "description": "Agentic branching logic workflow chains created by the user",
+      "fields": {
+        "id": { "type": "string", "description": "Chain ID" },
+        "userId": { "type": "string", "description": "Owner UID" },
+        "name": { "type": "string", "description": "Name of the logic chain" },
+        "nodes": { "type": "array", "description": "Node micro-sites and branching decision rules" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      }
+    },
+    "users/{userId}/capsules": {
+      "description": "Time-locked or trigger-locked capsules created by the user",
+      "fields": {
+        "id": { "type": "string", "description": "Capsule ID" },
+        "userId": { "type": "string", "description": "Owner UID" },
+        "title": { "type": "string", "description": "Capsule title" },
+        "url": { "type": "string", "description": "Target micro-site URL" },
+        "unlockTime": { "type": "string", "description": "Scheduled unlock timestamp" },
+        "conditions": { "type": "map", "description": "Unlock criteria" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      }
+    }
+  }
+}

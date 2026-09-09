@@ -1,0 +1,6 @@
+{
+  "name": "Bitty Box",
+  "description": "Compress HTML, rich documents, recipes, and interactive apps into self-contained, shareable URL fragments in a vibrant retro-futuristic synthwave workspace.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

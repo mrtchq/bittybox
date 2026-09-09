@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bittybox.org/schemas/policy.v1.json",
+  "title": "Bitty Box Link Policy (v1)",
+  "description": "Authoritative JSON Schema (Draft 2020-12) for a Bitty Box link access policy in the v1 launch scope. A policy is an ordered set of gating rules evaluated before a gated payload is delivered. v1 supports: password, TOTP, passkey/WebAuthn, time window, session TTL, max opens / one-time, and out-of-band Telegram approval. Geo restrictions, IP allow/deny lists, and mTLS are explicitly OUT of scope (v2) and MUST NOT appear here. Per locked SCOPE.md rule 4, audit logging is always enabled and cannot be disabled.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Policy schema version. Pinned to 1.0 for the v1 launch.",
+      "type": "string",
+      "const": "1.0"
+    },
+    "evaluation": {
+      "description": "How multiple rules combine. 'all' = every rule must pass (AND); 'any' = at least one rule must pass (OR).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["all", "any"]
+        }
+      },
+      "required": ["mode"],
+      "default": { "mode": "all" }
+    },
+    "rules": {
+      "description": "Ordered list of gating rules. At least one is required for a gated link.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": { "$ref": "#/$defs/rule" }
+    },
+    "delivery": {
+      "description": "How the payload is served after all rules pass. Gated payloads always stay server-side; the public URL alone never yields protected content (SCOPE.md rule 3).",
+      "$ref": "#/$defs/delivery"
+    },
+    "audit": {
+      "description": "Audit logging configuration. Always enabled in v1 (SCOPE.md rule 4).",
+      "$ref": "#/$defs/audit"
+    }
+  },
+  "required": ["rules"],
+  "$defs": {
+    "rule": {
+      "description": "Discriminated union of all v1 gating rule types.",
+      "oneOf": [
+        { "$ref": "#/$defs/passwordRule" },
+        { "$ref": "#/$defs/totpRule" },
+        { "$ref": "#/$defs/passkeyRule" },
+        { "$ref": "#/$defs/timeWindowRule" },
+        { "$ref": "#/$defs/sessionTtlRule" },
+        { "$ref": "#/$defs/maxOpensRule" },
+        { "$ref": "#/$defs/telegramApprovalRule" }
+      ]
+    },
+    "passwordRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "password" },
+        "required": {
+          "description": "Whether the viewer must supply a password before delivery.",
+          "type": "boolean",
+          "default": true
+        },
+        "min_length": {
+          "description": "Minimum accepted password length (enforced at enrollment / link creation).",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128,
+          "default": 8
+        },
+        "hint": {
+          "description": "Optional non-secret hint shown on the gate page.",
+          "type": "string",
+          "maxLength": 120
+        }
+      },
+      "required": ["type"]
+    },
+    "totpRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "totp" },
+        "require_enrolled": {
+          "description": "True means the creator must have enrolled a TOTP secret before the link can be used.",
+          "type": "boolean",
+          "default": true
+        },
+        "issuer": {
+          "description": "Issuer label encoded into the otpauth URI.",
+          "type": "string",
+          "maxLength": 64,
+          "default": "Bitty Box"
+        },
+        "label": {
+          "description": "Account label encoded into the otpauth URI (e.g. creator email).",
+          "type": "string",
+          "maxLength": 128
+        },
+        "digits": {
+          "type": "integer",
+          "enum": [6, 8],
+          "default": 6
+        },
+        "period": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 120,
+          "default": 30
+        }
+      },
+      "required": ["type"]
+    },
+    "passkeyRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "passkey" },
+        "require_enrolled": {
+          "description": "True means the creator must have registered at least one passkey before the link can be used.",
+          "type": "boolean",
+          "default": true
+        },
+        "user_verification": {
+          "description": "WebAuthn user verification requirement for the assertion.",
+          "type": "string",
+          "enum": ["required", "preferred", "discouraged"],
+          "default": "preferred"
+        }
+      },
+      "required": ["type"]
+    },
+    "timeWindowRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "time_window" },
+        "not_before": {
+          "description": "Link is inert before this ISO-8601 datetime (UTC).",
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "description": "Link auto-revokes at this ISO-8601 datetime (UTC).",
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["type"],
+      "anyOf": [
+        { "required": ["not_before"] },
+        { "required": ["expires_at"] }
+      ]
+    },
+    "sessionTtlRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "session_ttl" },
+        "idle_timeout_seconds": {
+          "description": "Session expires after this many seconds of inactivity.",
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 86400
+        },
+        "max_lifetime_seconds": {
+          "description": "Hard cap on session lifetime regardless of activity.",
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 604800
+        }
+      },
+      "required": ["type"],
+      "anyOf": [
+        { "required": ["idle_timeout_seconds"] },
+        { "required": ["max_lifetime_seconds"] }
+      ]
+    },
+    "maxOpensRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "max_opens" },
+        "max": {
+          "description": "Maximum number of successful opens allowed. Must be >= 1.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "one_time": {
+          "description": "If true, the link burns after the first successful open (max is forced to 1).",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["type", "max"]
+    },
+    "telegramApprovalRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "telegram_approval" },
+        "required": {
+          "description": "If true, every open requires explicit owner approval via Telegram (HITL). If false, the owner is only notified.",
+          "type": "boolean",
+          "default": true
+        },
+        "chat_id": {
+          "description": "Telegram chat id to receive the approval request / notification. Resolved from the owner account when omitted.",
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "required": ["type"]
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "description": "How the payload is released after auth. 'signed_grant' issues a short-lived post-auth grant token (default, most secure). 'redirect' sends the viewer to redirect_url. 'inline' streams the stored payload directly.",
+          "type": "string",
+          "enum": ["signed_grant", "redirect", "inline"],
+          "default": "signed_grant"
+        },
+        "redirect_url": {
+          "description": "Required when method is 'redirect'.",
+          "type": "string",
+          "format": "uri"
+        },
+        "grant_ttl_seconds": {
+          "description": "Lifetime of the post-auth delivery grant token (signed_grant only).",
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 3600,
+          "default": 60
+        }
+      },
+      "required": ["method"],
+      "allOf": [
+        {
+          "if": { "properties": { "method": { "const": "redirect" } } },
+          "then": { "required": ["redirect_url"] }
+        }
+      ]
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "description": "Audit logging is always on in v1. Locked by SCOPE.md rule 4.",
+          "type": "boolean",
+          "const": true
+        },
+        "log_ip": {
+          "type": "boolean",
+          "default": true
+        },
+        "log_reason": {
+          "description": "Log the allow/deny reason for every policy evaluation.",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["enabled"]
+    }
+  }
+}

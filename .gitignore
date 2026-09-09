@@ -1,0 +1,30 @@
+# Dependencies and generated local output
+node_modules/
+coverage/
+build/
+dist-v2/
+*.log
+.DS_Store
+server.js.bak-*
+server.js.before-*
+
+# Runtime and deployment secrets
+.env*
+!.env.example
+.grant-secret
+secrets/
+/etc/bittybox/
+.hermes*
+
+# Production user data and local-only state
+data/
+.firebase/
+.netlify/
+
+# Frontend local state
+frontend/node_modules/
+frontend/.env*
+frontend/.netlify/
+
+# Keep the portable live-site symlink tracked.
+!dist

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#090806" />
+  <meta name="description" content="Build a private portable micro-app and seal it inside one URL." />
+  <title>Bitty Box v2 Lab</title>
+  <link rel="icon" href="/favicon.png" />
+</head>
+<body>
+  <main id="builder" class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Bitty Box home">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span>BITTY BOX</span>
+      </a>
+      <span class="lab-badge">V2 LAB</span>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">PORTABLE PRIVATE MICRO-APPS</p>
+      <h1 id="page-title">Put it in a Box.</h1>
+      <p>Type or paste. Bitty Box seals it inside one shareable URL.</p>
+    </section>
+
+    <section class="workspace" aria-label="Bitty Box builder">
+      <div class="chain-header">
+        <div>
+          <p class="micro-label">YOUR CHAIN</p>
+          <p id="chain-count" class="chain-count">1 BOX</p>
+        </div>
+        <button id="open-chain" class="quiet-button" type="button">CHAIN <span class="pro-chip">PRO PREVIEW</span></button>
+      </div>
+
+      <div id="chain-track" class="chain-track" aria-label="Chained Boxes" tabindex="0"></div>
+
+      <article class="box-chamber" aria-labelledby="active-box-label">
+        <div class="box-chamber-head">
+          <div>
+            <p id="active-box-label" class="micro-label">BOX 1</p>
+            <input id="box-title" class="title-input" type="text" maxlength="80" value="My Box" aria-label="Box title" />
+          </div>
+          <button id="open-protect" class="icon-button" type="button" aria-label="Protect this Box">LOCK</button>
+        </div>
+
+        <label class="visually-hidden" for="box-content">Content for your Bitty Box</label>
+        <textarea id="box-content" rows="12" maxlength="1000000" placeholder="Type or paste what you want to share…"></textarea>
+
+        <div class="status-row">
+          <span id="byte-count">0 BYTES</span>
+          <span id="protection-state">PUBLIC LINK</span>
+        </div>
+      </article>
+
+      <div class="primary-actions">
+        <button id="preview-box" class="secondary-button" type="button">PREVIEW</button>
+        <button id="generate-box" class="primary-button" type="button" data-generate-owner="final-box">MAKE BOX</button>
+      </div>
+      <p id="status" class="status" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <span>FREE STATELESS BOXES</span>
+      <span>NO UPLOAD • NO ACCOUNT</span>
+    </footer>
+  </main>
+
+  <main id="viewer" class="viewer-shell" hidden>
+    <header class="viewer-bar">
+      <button id="viewer-home" class="quiet-button" type="button">BITTY BOX</button>
+      <span id="viewer-position"></span>
+      <button id="viewer-next" class="primary-button viewer-next" type="button" hidden>NEXT BOX</button>
+    </header>
+    <section id="password-gate" class="password-gate" hidden>
+      <p class="eyebrow">SEALED BOX</p>
+      <h1>Password required</h1>
+      <form id="password-form">
+        <label for="viewer-password">Password</label>
+        <input id="viewer-password" type="password" autocomplete="current-password" />
+        <button class="primary-button" type="submit">OPEN BOX</button>
+      </form>
+      <p id="password-error" class="status" aria-live="polite"></p>
+    </section>
+    <iframe id="capsule-frame" title="Bitty Box Capsule" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
+  </main>
+
+  <div id="protect-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="protect-title" hidden>
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+      <p class="eyebrow">OPTIONAL</p>
+      <h2 id="protect-title">Protect this Box</h2>
+      <p>The password never leaves your browser or enters the URL.</p>
+      <label for="box-password">Password</label>
+      <input id="box-password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" />
+      <div class="modal-actions">
+        <button id="remove-password" class="secondary-button" type="button">REMOVE</button>
+        <button id="save-password" class="primary-button" type="button">SAVE</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chain-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="chain-title" hidden>
+    <div class="modal-card">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+      <p class="eyebrow">HORIZONTAL BOX CHAIN</p>
+      <h2 id="chain-title">Add the next Box</h2>
+      <p>Stay in one flow. Swipe the chain to move between Boxes.</p>
+      <div class="choice-grid">
+        <button id="clone-box" class="choice" type="button"><strong>Clone this Box</strong><span>Reuse its content and protection.</span></button>
+        <button id="blank-box" class="choice" type="button"><strong>Start blank</strong><span>Open a clean next Box.</span></button>
+      </div>
+      <button id="delete-box" class="danger-link" type="button">DELETE CURRENT BOX</button>
+    </div>
+  </div>
+
+  <div id="result-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="result-title" hidden>
+    <div class="modal-card result-card">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+      <p class="eyebrow">SEALED</p>
+      <h2 id="result-title">Your Box is a URL.</h2>
+      <p id="result-summary">It opened in a new tab. Your builder is still here.</p>
+      <label for="result-url">Capsule URL</label>
+      <textarea id="result-url" rows="4" readonly></textarea>
+      <div class="modal-actions">
+        <button id="copy-result" class="secondary-button" type="button">COPY</button>
+        <button id="open-result" class="primary-button" type="button">OPEN</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+*.cache
+*.log
+*.DS_Store
+package-lock.json
+node_modules
+# Local Netlify folder
+.netlify
+
+# Environment files
+.env
+.env.*
