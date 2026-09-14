@@ -1,6 +1,6 @@
 {
   "name": "Bitty Box",
-  "short_name": "BittyBox",
+  "short_name": "Bitty Box",
   "description": "Whole Webpages in a URL - Zero Server Persistence",
   "start_url": "/",
   "display": "standalone",
