@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Bitty Box — UI polish layer  (ADDITIVE, no build step)
+   --------------------------------------------------------------------------
+   Loaded only by /editor (docs/editor.html), after the built bundle CSS.
+   Every rule here is a patch on top of the existing design system — nothing
+   in the Vite bundle, editor-stars.css, hybrid-theme.css or style.css is
+   touched. Nothing is re-themed.
+
+   ROLLBACK: delete the two tags in docs/editor.html (ui-polish.css,
+   ui-polish.js) or delete this file. Zero build artifacts depend on it.
+
+   Sources of truth for the rules below: the 2026-09-18 /editor audit
+   (computed-style + hit-area + focus + transition measurements) and the
+   make-interfaces-feel-better principles (tabular numbers, text wrapping,
+   hit areas, no `transition: all`, image outlines, scale on press).
+   ========================================================================== */
+
+:root {
+  --ui-ring-rgb: 34, 211, 238;
+  --ui-hairline: rgba(255, 255, 255, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   1. Tabular numerals
+   Counters on this page update per keystroke (0 BYTES, Live Locks (n),
+   Roadmap (n), credit counters) and were shifting width as they changed:
+   `font-variant-numeric: tabular-nums` measured 0 occurrences page-wide.
+   Scoped exception: the composer textarea holds the user's own code, so its
+   numerals are left exactly as authored.
+   -------------------------------------------------------------------------- */
+html {
+  font-variant-numeric: tabular-nums;
+}
+textarea {
+  font-variant-numeric: normal;
+}
+
+/* --------------------------------------------------------------------------
+   2. Text wrapping
+   Headings balance; running copy avoids orphans (measured 0 usage before).
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.shepherd-title, .shepherd-content h1, .shepherd-content h2, .shepherd-content h3 {
+  text-wrap: balance;
+}
+p, li, figcaption, blockquote, dd,
+.shepherd-text, .shepherd-text p {
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   3. Themed focus ring
+   Keyboard focus was working (8/8 tabbed elements) but the visual was the
+   stock UA `outline: auto` — a browser-blue/white ring on a neon surface, and
+   several controls ship `outline-none` so their affordance was inconsistent.
+   This replaces it with a single cyan ring; it never removes a focus style.
+   -------------------------------------------------------------------------- */
+:where(a, button, input, textarea, select, summary, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid rgba(var(--ui-ring-rgb), 0.95) !important;
+  outline-offset: 2px !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Image hairline
+   Every <img> (logo, favicon surfaces, avatars) had `outline: none`. A pure
+   white 10% hairline gives depth on dark surfaces without reading as dirt.
+   -------------------------------------------------------------------------- */
+img:not([src^="data:"]) {
+  outline: 1px solid var(--ui-hairline);
+  outline-offset: -1px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Never `transition: all`
+   20 elements ran `transition-all` with a real duration. This narrows the
+   animated property list to visited/compositable properties only, which stops
+   unrelated properties (layout, custom props, `all`) from animating on every
+   React re-render. Duration and easing utilities are deliberately left alone.
+   The second block covers the same defect expressed as `transition: all .3s`
+   in hand-written CSS (.holo-button) and in the bundled tour library
+   (shepherd.js), which the class-attribute selector cannot reach.
+   -------------------------------------------------------------------------- */
+:root [class*="transition-all"] {
+  transition-property: color, background-color, border-color, text-shadow,
+    box-shadow, opacity, transform, translate, scale, rotate, filter;
+}
+:root .holo-button {
+  transition-property: color, background-color, border-color, text-shadow,
+    box-shadow, opacity, transform, translate, scale, rotate, filter;
+}
+:root .shepherd-button,
+:root .shepherd-btn-primary,
+:root .shepherd-cancel-icon,
+:root .shepherd-modal-overlay-container,
+:root .shepherd-modal-overlay-container path {
+  transition-property: color, background-color, border-color, text-shadow,
+    box-shadow, opacity, transform, translate, scale, rotate, filter,
+    height, fill, stroke;
+}
+
+/* --------------------------------------------------------------------------
+   6. Scale on press
+   0.96, per the design-engineering rule (never below 0.95). Motion only — the
+   controls already carry static state cues (colour, ring, label).
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  button:not([disabled]):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    scale: 0.96;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. Hit areas
+   Small controls were measured at 24x24 ("Scroll left/right"), 25px tall
+   (SIMPLE/PRO), 19px tall (Starter HTML / Markdown Note), 26-36px (Private
+   Draft / account avatar). data-ui-hit is applied at runtime to controls whose
+   box is under 40px tall. The pseudo-element grows the *hit* area to 40px
+   vertically while leaving the painted box and the layout completely
+   unchanged, and it never grows horizontally, so hit areas of neighbouring
+   controls cannot overlap.
+   Positioning context is only injected for static controls (data-ui-hit-static
+   comes from ui-polish.js); fixed/absolute controls already have one and must
+   not be unhooked from it.
+   -------------------------------------------------------------------------- */
+[data-ui-hit-static] {
+  position: relative;
+}
+[data-ui-hit]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 40px;
+  min-height: 100%;
+  transform: translateY(-50%);
+  border-radius: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   8. Horizontal rail affordance (Live Locks / Roadmap rails)
+   The rails scroll (measured 1232px of content in a 982px viewport) but ship
+   `scrollbar-none`, so nothing on screen said "there is more to the right" and
+   the last card simply looked clipped. A mask fade on the overflowing side is
+   the cheapest honest cue and preserves the no-scrollbar design decision.
+   The class toggles come from ui-polish.js.
+   -------------------------------------------------------------------------- */
+.ui-scroll-x {
+  scroll-padding-inline: 8px;
+  padding-inline-end: 6px;
+}
+.ui-scroll-x.ui-overflow-right {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+}
+.ui-scroll-x.ui-overflow-left {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 26px), transparent 100%);
+  mask-image: linear-gradient(to left, #000 calc(100% - 26px), transparent 100%);
+}
+.ui-scroll-x.ui-overflow-left.ui-overflow-right {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 26px, #000 calc(100% - 26px), transparent 100%);
+}
+
+/* --------------------------------------------------------------------------
+   9. Reduced motion
+   Honour the OS preference across the whole surface (the page runs a heavy
+   motion system: count-ups, orbital rings, starfields, scramble text).
+   Durations collapse instead of being removed, so animationend-driven state
+   machines still settle into their final state.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

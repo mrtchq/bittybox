@@ -1,0 +1,256 @@
+/* Prevent sideways page scroll on small screens */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+img, svg, video, canvas {
+  max-width: 100%;
+}
+
+/* Glowing Effects & Cyberpunk Aesthetics */
+body {
+  background-color: #060913;
+  background-image: 
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0, 229, 255, 0.08) 0%, transparent 80%),
+    radial-gradient(ellipse 60% 30% at 50% 100%, rgba(192, 132, 252, 0.05) 0%, transparent 70%);
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+.neon-glow-cyan {
+  box-shadow: 0 0 25px -5px rgba(0, 229, 255, 0.35);
+}
+.neon-glow-purple {
+  box-shadow: 0 0 25px -5px rgba(192, 132, 252, 0.35);
+}
+.neon-border-cyan {
+  border-color: rgba(0, 229, 255, 0.4);
+}
+.neon-border-purple {
+  border-color: rgba(192, 132, 252, 0.4);
+}
+
+/* Scrollbars are hidden globally: page, marquee rails, terminal log, and modal
+   lists all keep scrolling (wheel, touch, drag, nav buttons, auto-drift) —
+   only the native browser chrome is suppressed. */
+/* Firefox / IE-legacy path */
+html, body, * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+/* WebKit / Chromium path */
+*::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-corner {
+  display: none !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* ==========================================================================
+   Horizontal marquee card rails (presets, live locks, coming soon).
+   Each section is one swipeable row so the page stays short on mobile.
+   ========================================================================== */
+.marquee {
+  display: flex;
+  flex-direction: row;
+  gap: 0.9rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding: 0.25rem 1rem 0.9rem;
+  margin: 0 -1rem;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  cursor: grab;
+  /* edge fade so users see there is more to swipe */
+  -webkit-mask-image: linear-gradient(to right, #000 96%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 96%, transparent 100%);
+}
+.marquee::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.marquee.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+/* Auto-marquee drift needs snapping off: x-proximity snapping quantizes the
+   small per-frame scroll steps back to the nearest card, which reads as a
+   stutter (or no movement at all). Snapping comes back on interaction. */
+.marquee.autodrift {
+  scroll-snap-type: none;
+  -webkit-mask-image: linear-gradient(to right, #000 92%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 92%, transparent 100%);
+}
+/* Cards inside a rail keep a fixed swipeable width instead of stacking */
+.marquee > * {
+  flex: 0 0 min(300px, 82vw);
+  max-width: 82vw;
+  scroll-snap-align: start;
+}
+.marquee-hint {
+  display: block;
+  text-align: center;
+  font: 10px ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  color: #475569;
+  margin-top: 0.15rem;
+}
+@media (min-width: 640px) {
+  .marquee-hint { display: none; }
+}
+.marquee-nav {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 1px solid #1e293b;
+  background: #020617;
+  color: #67e8f9;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.marquee-nav:hover {
+  background: #0e2233;
+  border-color: rgba(0, 229, 255, 0.4);
+}
+
+/* Filter tabs: swipeable on mobile instead of wrapping off-screen */
+.filter-tabs {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+.filter-tabs .filter-tab {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Mobile optimizations (phones < 640px)
+   ========================================================================== */
+@media (max-width: 639px) {
+  /* Keep both primary actions visible; there are only two, so scrolling should
+     never be required to discover Open Editor. */
+  .header-actions {
+    max-width: none;
+    overflow: visible;
+  }
+  .header-actions > * { flex-shrink: 0; }
+
+  /* Compact the identity before sacrificing either primary action. */
+  .landing-brand { min-width: 0; }
+  .landing-brand-copy { min-width: 0; }
+  .landing-brand-subtitle { display: none; }
+
+  /* Challenge cards: inputs + buttons stack full-width, never overflow */
+  #challengesContainer input[type="text"],
+  #challengesContainer input[type="password"],
+  #challengesContainer input:not([type]) {
+    width: 100% !important;
+    min-width: 0;
+    font-size: 16px; /* stops iOS auto-zoom on focus */
+  }
+  #challengesContainer .flex.items-center.space-x-2,
+  #challengesContainer .flex.flex-wrap.items-center {
+    flex-wrap: wrap;
+  }
+  #challengesContainer button {
+    min-height: 2.5rem; /* comfortable touch target */
+  }
+
+  /* Ceremony mode toggle + embed button stack neatly */
+  #console .bg-slate-950.p-1.rounded-xl {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Terminal log shorter so the console fits on a phone screen */
+  #terminalLog { max-height: 5.5rem; }
+
+  /* Threshold row: label above, select full width */
+  #thresholdSelect {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* Share & Roadmap modals fit small screens */
+  #shareModal > div,
+  #roadmapModal > div {
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  #shareUrlBox { font-size: 12px; }
+
+  /* Narrower rail cards leave a peek of the next card (affordance) */
+  .marquee > * {
+    flex-basis: min(260px, 78vw);
+  }
+}
+
+@media (max-width: 399px) {
+  header > div {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  .landing-brand { gap: 0.5rem; }
+  .landing-brand-qualifier { display: none; }
+  .header-actions { gap: 0.35rem; }
+  .header-actions a {
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+  .header-actions a span { margin-left: 0.25rem; }
+}
+
+/* Roadmap modal list: no visible scrollbar (scrolling still works) */
+#roadmapLocksList {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#roadmapLocksList::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Respect users who prefer no motion: stop the auto-marquee drift */
+@media (prefers-reduced-motion: reduce) {
+  .marquee { scroll-behavior: auto; }
+}
+/* Static retro grid, tinted to match the cyan and purple interface accents. */
+html {
+  background-color: #060913;
+  background-image:
+    radial-gradient(ellipse 90% 65% at 50% 0%, rgba(0, 229, 255, 0.06), transparent 75%),
+    radial-gradient(ellipse 70% 55% at 100% 100%, rgba(192, 132, 252, 0.045), transparent 75%),
+    linear-gradient(rgba(56, 189, 248, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192, 132, 252, 0.04) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  background-attachment: fixed;
+}
+body {
+  background-color: transparent;
+  background-image: none;
+}
