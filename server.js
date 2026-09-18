@@ -28,6 +28,10 @@ const MIME_TYPES = {
 function resolveFilePath(reqPath) {
   // Normalize path and remove query parameters/hashes
   let pathname = decodeURIComponent(reqPath.split('?')[0].split('#')[0]);
+  // `/` serves the splash landing page; the editor lives at `/editor` (`/app` alias).
+  if (pathname === '/app' || pathname === '/app/') {
+    pathname = '/editor.html';
+  }
   if (pathname.endsWith('/')) {
     pathname += 'index.html';
   }

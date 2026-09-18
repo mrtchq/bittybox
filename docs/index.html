@@ -55,45 +55,42 @@
   
   <!-- Lock Engine Script -->
   <script src="/assets/lockEngine.js"></script>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/style.css?v=20260918-no-scrollbars">
 </head>
 <body class="font-sans antialiased text-slate-200">
+
+  <!-- Parallax starfield: three drifting star layers behind every section -->
+  <div class="starfield" id="starfield" aria-hidden="true">
+    <div class="star-layer" data-depth="0.55"><div id="stars"></div></div>
+    <div class="star-layer" data-depth="1"><div id="stars2"></div></div>
+    <div class="star-layer" data-depth="1.8"><div id="stars3"></div></div>
+  </div>
 
   <!-- Top Navigation Header -->
   <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center p-0.5 shadow-lg shadow-cyan-500/20">
+      <div class="flex items-center space-x-3 landing-brand">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center p-0.5 shadow-lg shadow-cyan-500/20 shrink-0">
           <div class="w-full h-full bg-slate-950 rounded-[6px] flex items-center justify-center">
             <i data-lucide="lock" class="w-4 h-4 text-cyan-400"></i>
           </div>
         </div>
-        <div>
-          <span class="text-xs font-mono font-bold tracking-widest text-cyan-400 uppercase">BITTY BOX • LOCK SIM</span>
-          <div class="text-[10px] font-mono text-slate-400">URL-Resident WebCrypto Engine</div>
+        <div class="landing-brand-copy">
+          <span class="text-xs font-mono font-bold tracking-widest text-cyan-400 uppercase whitespace-nowrap">BITTY BOX<span class="landing-brand-qualifier"> • LOCK SIM</span></span>
+          <div class="text-[10px] font-mono text-slate-400 landing-brand-subtitle whitespace-nowrap">URL-Resident WebCrypto Engine</div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 header-actions">
-        <a href="#console" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full text-xs font-mono font-medium text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/10 transition">
-          <i data-lucide="terminal" class="w-3.5 h-3.5 mr-1.5"></i> Ceremony Console
+      <nav class="flex items-center gap-2 header-actions" aria-label="Primary">
+        <a href="/api/docs" aria-label="API/MCP Server" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-mono font-semibold text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/10 hover:text-white transition">
+          <i data-lucide="server" class="w-3.5 h-3.5 sm:mr-1.5" aria-hidden="true"></i>
+          <span class="sm:hidden ml-1.5">API/MCP</span><span class="hidden sm:inline">API/MCP Server</span>
         </a>
-        <a href="#combinations" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full text-xs font-mono font-medium text-purple-400 border border-purple-500/30 hover:bg-purple-500/10 transition">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1.5"></i> Combos
+        <a href="/editor" aria-label="Open Editor" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white hover:brightness-110 shadow-lg shadow-purple-500/20 transition">
+          <i data-lucide="cpu" class="w-3.5 h-3.5 sm:mr-1.5" aria-hidden="true"></i>
+          <span class="sm:hidden ml-1.5">Editor</span><span class="hidden sm:inline">Open Editor</span>
         </a>
-        <a href="#catalog" class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-mono font-medium text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/10 transition">
-          <i data-lucide="grid" class="w-3.5 h-3.5 sm:mr-1.5"></i> <span class="hidden min-[400px]:inline">16 Live Locks</span>
-        </a>
-        <button id="btnNavRoadmap" class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-mono font-medium text-amber-400 border border-amber-500/30 hover:bg-amber-500/10 transition">
-          <i data-lucide="map" class="w-3.5 h-3.5 sm:mr-1.5"></i> <span class="hidden min-[400px]:inline">Roadmap (9)</span>
-        </button>
-        <button id="btnQuickShare" class="px-2.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:brightness-110 shadow-lg shadow-cyan-500/20 transition flex items-center">
-          <i data-lucide="share-2" class="w-3.5 h-3.5 sm:mr-1.5"></i> <span class="hidden min-[400px]:inline">Share Vault</span>
-        </button>
-        <a href="/editor" class="px-2.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white hover:brightness-110 shadow-lg shadow-purple-500/20 transition flex items-center">
-          <i data-lucide="cpu" class="w-3.5 h-3.5 sm:mr-1.5"></i> <span class="hidden min-[400px]:inline">Open Editor</span>
-        </a>
-      </div>
+      </nav>
     </div>
   </header>
 
@@ -429,9 +426,61 @@
   <footer class="border-t border-slate-800/80 bg-slate-950/80 py-5 sm:py-6 mt-8 sm:mt-12 text-center text-xs font-mono text-slate-500">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>BITTY BOX SPECIFICATION • CLIENT-SIDE ENCRYPTION PROTOCOL</div>
-      <div>Designed for <a href="https://bittybox.org" class="text-cyan-400 hover:underline">bittybox.org</a> • Decentralized Web & WebCrypto</div>
+      <div class="flex flex-col items-center sm:items-end gap-2">
+        <div>Designed for <a href="https://bittybox.org" class="text-cyan-400 hover:underline">bittybox.org</a> • Decentralized Web &amp; WebCrypto</div>
+        <nav class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1" aria-label="Legal and support">
+          <a href="/editor#/terms" class="text-cyan-400 hover:text-cyan-300 hover:underline transition">Terms of Service</a>
+          <span aria-hidden="true">•</span>
+          <a href="/editor#/privacy" class="text-cyan-400 hover:text-cyan-300 hover:underline transition">Privacy Policy</a>
+          <span aria-hidden="true">•</span>
+          <a href="mailto:support@bittybox.org" class="text-cyan-400 hover:text-cyan-300 hover:underline transition">Contact Us</a>
+        </nav>
+      </div>
     </div>
   </footer>
+
+  <!-- Landing page behaviour: lock console, presets, live locks, marquee rails -->
+  <script src="/app.js?v=20260915-header-footer"></script>
+
+  <!-- Parallax starfield driver: scroll + pointer depth on the star layers -->
+  <script>
+    (function () {
+      if (typeof window === 'undefined') return;
+      var field = document.getElementById('starfield');
+      if (!field) return;
+      var layers = Array.prototype.slice.call(field.querySelectorAll('.star-layer'));
+      if (!layers.length) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var px = 0, py = 0, sy = 0, queued = false;
+
+      function apply() {
+        queued = false;
+        for (var i = 0; i < layers.length; i++) {
+          var d = parseFloat(layers[i].getAttribute('data-depth')) || 1;
+          var tx = px * d;
+          var ty = py * d - sy * 0.06 * d;
+          layers[i].style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0)';
+        }
+      }
+      function queue() {
+        if (!queued) { queued = true; requestAnimationFrame(apply); }
+      }
+
+      window.addEventListener('scroll', function () {
+        sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+        queue();
+      }, { passive: true });
+
+      window.addEventListener('pointermove', function (e) {
+        px = (e.clientX / Math.max(1, window.innerWidth) - 0.5) * 26;
+        py = (e.clientY / Math.max(1, window.innerHeight) - 0.5) * 26;
+        queue();
+      }, { passive: true });
+
+      apply();
+    })();
+  </script>
 
   <!-- Tap/Click Confetti FX -->
   <script>
