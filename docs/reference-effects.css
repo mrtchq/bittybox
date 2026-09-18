@@ -1,0 +1,138 @@
+/* Bitty Box reference-inspired atmosphere — additive staging layer.
+   Remove this file + reference-effects.js tags to roll back. */
+:root {
+  --bb-fx-cyan: #54f6ff;
+  --bb-fx-violet: #b98cff;
+  --bb-fx-ink: #050711;
+  --bb-fx-line: rgba(148, 163, 184, .17);
+  --bb-fx-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+.bb-fx-aurora,
+.bb-fx-noise,
+.bb-fx-cursor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.bb-fx-aurora {
+  overflow: hidden;
+  background:
+    radial-gradient(45rem 28rem at var(--bb-pointer-x, 50%) var(--bb-pointer-y, 10%), rgba(84,246,255,.10), transparent 68%),
+    radial-gradient(34rem 24rem at 92% 12%, rgba(185,140,255,.11), transparent 72%),
+    radial-gradient(28rem 22rem at 5% 78%, rgba(56,189,248,.07), transparent 74%);
+  filter: saturate(115%);
+  transition: background-position .6s var(--bb-fx-ease);
+}
+.bb-fx-aurora::before,
+.bb-fx-aurora::after {
+  content: "";
+  position: absolute;
+  width: 38vw;
+  height: 38vw;
+  min-width: 22rem;
+  min-height: 22rem;
+  border-radius: 50%;
+  filter: blur(42px);
+  opacity: .18;
+  animation: bb-fx-drift 18s ease-in-out infinite alternate;
+}
+.bb-fx-aurora::before {
+  left: -13vw;
+  top: 22vh;
+  background: #00d5ff;
+}
+.bb-fx-aurora::after {
+  right: -14vw;
+  top: 46vh;
+  background: #913cff;
+  animation-delay: -8s;
+}
+.bb-fx-noise {
+  opacity: .038;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
+.bb-fx-cursor {
+  z-index: 9998;
+  background: radial-gradient(22rem circle at var(--bb-pointer-x, -20rem) var(--bb-pointer-y, -20rem), rgba(84,246,255,.13), transparent 62%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+body.bb-fx-pointer .bb-fx-cursor { opacity: 1; }
+body > :not(.bb-fx-aurora):not(.bb-fx-noise):not(.bb-fx-cursor) { position: relative; z-index: 1; }
+
+.bb-fx-grid-shimmer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .26;
+  background-image:
+    linear-gradient(rgba(84,246,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(185,140,255,.045) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: linear-gradient(to bottom, #000, transparent 76%);
+  animation: bb-fx-grid 24s linear infinite;
+}
+
+.bb-fx-reveal {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity .75s var(--bb-fx-ease), translate .75s var(--bb-fx-ease);
+}
+.bb-fx-reveal.bb-fx-visible { opacity: 1; translate: 0 0; }
+
+.bb-fx-tilt {
+  transform: perspective(1100px) rotateX(var(--bb-tilt-x, 0deg)) rotateY(var(--bb-tilt-y, 0deg)) translateZ(0);
+  transform-style: preserve-3d;
+  transition: transform .55s var(--bb-fx-ease), box-shadow .55s var(--bb-fx-ease), border-color .35s ease;
+  will-change: transform;
+}
+.bb-fx-tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(22rem circle at var(--bb-card-x, 50%) var(--bb-card-y, 50%), rgba(255,255,255,.12), transparent 48%);
+  transition: opacity .35s ease;
+}
+.bb-fx-tilt:hover { border-color: rgba(84,246,255,.42) !important; box-shadow: 0 18px 55px rgba(0, 0, 0, .32), 0 0 30px rgba(84,246,255,.10); }
+.bb-fx-tilt:hover::after { opacity: 1; }
+
+.bb-fx-magnetic { transition: transform .25s var(--bb-fx-ease), filter .25s ease; will-change: transform; }
+.bb-fx-magnetic:hover { filter: brightness(1.12); }
+.bb-fx-ripple { position: relative; overflow: hidden; }
+.bb-fx-ripple-wave { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.42); transform: translate(-50%,-50%) scale(0); animation: bb-fx-ripple .65s ease-out forwards; pointer-events: none; }
+
+.bb-fx-scanline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -20vh;
+  height: 20vh;
+  pointer-events: none;
+  z-index: 2;
+  opacity: .08;
+  background: linear-gradient(to bottom, transparent, rgba(84,246,255,.6), transparent);
+  animation: bb-fx-scan 11s linear infinite;
+}
+
+@keyframes bb-fx-drift { from { translate: -3vw -2vh; rotate: -8deg; } to { translate: 6vw 5vh; rotate: 12deg; } }
+@keyframes bb-fx-grid { from { background-position: 0 0, 0 0; } to { background-position: 0 64px, 64px 0; } }
+@keyframes bb-fx-ripple { to { transform: translate(-50%,-50%) scale(20); opacity: 0; } }
+@keyframes bb-fx-scan { from { translate: 0 -20vh; } to { translate: 0 120vh; } }
+
+@media (max-width: 640px) {
+  .bb-fx-aurora::before, .bb-fx-aurora::after { filter: blur(34px); opacity: .12; }
+  .bb-fx-cursor, .bb-fx-scanline { display: none; }
+  .bb-fx-tilt { transform: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bb-fx-aurora::before, .bb-fx-aurora::after, .bb-fx-grid-shimmer, .bb-fx-scanline { animation: none; }
+  .bb-fx-reveal { opacity: 1; translate: none; transition: none; }
+  .bb-fx-tilt { transform: none !important; transition: none; }
+}
