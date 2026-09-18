@@ -19,9 +19,39 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0d0419" />
-    <script type="module" crossorigin src="/assets/index-generate-fix-C240D0F7.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CWpmtPuV.css">
-  </head>
+    <script type="module" crossorigin src="/assets/index-DgpUbTe6.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TdJvTKvB.css">
+    <!-- UI polish layer: additive, no build step. Rollback = remove these two tags. -->
+    <link rel="stylesheet" href="/ui-polish.css?v=20260918">
+    <script defer src="/ui-polish.js?v=20260918"></script>
+    <style id="editor-static-background">
+      /* Static editor atmosphere: preserve the cyan/violet console aesthetic without motion. */
+      .bitty-starfield {
+        background-color: #080610 !important;
+        background-image:
+          radial-gradient(ellipse 90% 58% at 50% 0%, rgba(0, 229, 255, .075), transparent 72%),
+          radial-gradient(ellipse 70% 52% at 100% 100%, rgba(192, 132, 252, .065), transparent 76%),
+          linear-gradient(rgba(103, 232, 249, .045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(192, 132, 252, .04) 1px, transparent 1px) !important;
+        background-size: auto, auto, 48px 48px, 48px 48px !important;
+        background-attachment: fixed !important;
+        animation: none !important;
+        transform: none !important;
+        translate: none !important;
+      }
+      .bitty-starfield #stars,
+      .bitty-starfield #stars2,
+      .bitty-starfield #stars3,
+      .bitty-starfield #stars::after,
+      .bitty-starfield #stars2::after,
+      .bitty-starfield #stars3::after {
+        display: none !important;
+        animation: none !important;
+        will-change: auto !important;
+      }
+    </style>
+  <style id="hide-roadmap-trigger">[title="View locks deferred to roadmap"]{display:none!important;visibility:hidden!important}</style>
+</head>
   <body class="bg-[#090314] text-cyan-100 antialiased overflow-x-hidden selection:bg-fuchsia-500 selection:text-white">
     <div id="root"></div>
     <script>
