@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Legacy snapshots and scratch files
+*ADHD*
+*adhd*
+*.legacy.*
+package.static-server.json
