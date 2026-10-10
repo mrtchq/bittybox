@@ -1,0 +1,6 @@
+{
+  "name": "Bitty Box - AI-First Micro-Web Protocol",
+  "description": "Autonomous AI-agent micro-web protocol and execution environment. URL-native micro-sites, scheduled capsules, and agentic branching logic chains.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

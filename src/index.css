@@ -1,0 +1,309 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-space-950: #040407;
+    --bg-space-900: #080811;
+    --bg-space-850: #0e0d1c;
+    --bg-space-800: #141428;
+    --gold-300: #ffe082;
+    --gold-400: #ffd159;
+    --gold-500: #f5b82e;
+    --gold-600: #d99814;
+    --chroma-cyan: #00e5ff;
+    --chroma-blue: #2563eb;
+    --chroma-purple: #9333ea;
+    --chroma-magenta: #ec4899;
+    --chroma-orange: #f97316;
+    --chroma-lime: #10b981;
+  }
+
+  html, body {
+    background: radial-gradient(ellipse at bottom, #161226 0%, #06050b 50%, #030306 100%);
+    color: #EDEDED;
+    font-family: 'Plus Jakarta Sans', 'Lato', system-ui, -apple-system, sans-serif;
+    min-height: 100%;
+  }
+
+  .font-orbitron {
+    font-family: 'Orbitron', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .font-rajdhani {
+    font-family: 'Rajdhani', 'Fira Code', monospace;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+/* Infinite upward star motion keyframe */
+@keyframes animStar {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-2000px); }
+}
+
+#stars, #stars2, #stars3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+#stars {
+  width: 1px;
+  height: 1px;
+  animation: animStar 60s linear infinite;
+}
+#stars:after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+
+#stars2 {
+  width: 2px;
+  height: 2px;
+  animation: animStar 100s linear infinite;
+}
+#stars2:after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+}
+
+#stars3 {
+  width: 3px;
+  height: 3px;
+  animation: animStar 150s linear infinite;
+}
+#stars3:after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 3px;
+  height: 3px;
+  background: transparent;
+}
+
+/* Dual Hemisphere Ambient Glows: Gold Circuitry (Left) & Rainbow Aurora (Right) */
+.nebula-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 15% 40%, rgba(245, 184, 46, 0.16) 0%, transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(147, 51, 234, 0.20) 0%, transparent 45%),
+    radial-gradient(circle at 90% 65%, rgba(236, 72, 153, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 75% 85%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 25% 75%, rgba(0, 229, 255, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, rgba(255, 209, 89, 0.22) 0%, transparent 60%);
+  z-index: 0;
+}
+
+/* Floating Bokeh Embers */
+.bokeh-dot {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  animation: floatBokeh 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatBokeh {
+  0% { transform: translateY(0px) scale(0.9); opacity: 0.35; }
+  50% { transform: translateY(-35px) scale(1.15); opacity: 0.85; }
+  100% { transform: translateY(-70px) scale(1); opacity: 0.4; }
+}
+
+/* Glassmorphism containers matching the reference */
+.glass-hud {
+  background: rgba(14, 13, 28, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 209, 89, 0.22);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.75), inset 0 0 20px rgba(245, 184, 46, 0.05);
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-hud:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(245, 184, 46, 0.25), inset 0 0 25px rgba(245, 184, 46, 0.08);
+}
+
+.glass-hud-rainbow {
+  background: rgba(16, 14, 32, 0.84);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(236, 72, 153, 0.28);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.75), inset 0 0 25px rgba(147, 51, 234, 0.08);
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-hud-rainbow:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 40px rgba(236, 72, 153, 0.32), inset 0 0 30px rgba(147, 51, 234, 0.15);
+}
+
+/* Text Gradients */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF9C4 0%, #FFD54F 40%, #FFB300 70%, #FF8F00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(255, 213, 79, 0.6));
+}
+
+.rainbow-gradient-text {
+  background: linear-gradient(90deg, #00e5ff 0%, #3b82f6 20%, #9333ea 40%, #ec4899 65%, #f97316 85%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 16px rgba(236, 72, 153, 0.55));
+}
+
+.gold-glow {
+  box-shadow: 0 0 22px rgba(245, 184, 46, 0.4), inset 0 0 10px rgba(245, 184, 46, 0.2);
+}
+
+.rainbow-glow {
+  box-shadow: 0 0 24px rgba(236, 72, 153, 0.35), 0 0 12px rgba(0, 229, 255, 0.2);
+}
+
+/* Rainbow animated border pulse */
+.rainbow-border-pulse {
+  position: relative;
+}
+.rainbow-border-pulse::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(90deg, #ffd159, #00e5ff, #a855f7, #ec4899, #f97316, #10b981, #ffd159);
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rainbowGlow 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rainbowGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 3D Cyberpunk Horizon Grid */
+.perspective-grid {
+  position: fixed;
+  bottom: -60px;
+  left: -50%;
+  width: 200%;
+  height: 40%;
+  background-image: 
+    linear-gradient(rgba(245, 184, 46, 0.18) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(236, 72, 153, 0.16) 1.5px, transparent 1.5px);
+  background-size: 50px 50px;
+  transform: perspective(300px) rotateX(68deg);
+  transform-origin: bottom center;
+  mask-image: linear-gradient(to top, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 90%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 90%);
+  animation: gridScroll 16s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gridScroll {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 500px; }
+}
+
+/* Horizontal baseline beam */
+.horizon-light-beam {
+  position: fixed;
+  bottom: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 320px;
+  background: radial-gradient(ellipse at bottom, rgba(255, 209, 89, 0.4) 0%, rgba(236, 72, 153, 0.2) 38%, rgba(0, 229, 255, 0.12) 60%, transparent 75%);
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glowing button shimmer */
+.btn-glow-pulse {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow-pulse::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+  transform: rotate(25deg) translateY(-100%);
+  animation: btnShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes btnShimmer {
+  0%, 70% { transform: rotate(25deg) translateY(-100%); }
+  100% { transform: rotate(25deg) translateY(100%); }
+}
+
+/* Stardust particle sparks */
+.stardust-spark {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 9999;
+  animation: sparkFade 0.75s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes sparkFade {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(0);
+  }
+}
+
+/* Screen shake for high-voltage interaction */
+@keyframes screenJolt {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 1px); }
+}
+.screen-shake {
+  animation: screenJolt 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080811;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2240;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f5b82e;
+}
