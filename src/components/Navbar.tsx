@@ -16,6 +16,7 @@ import {
   QrCode,
   Volume2,
   VolumeX,
+  User,
 } from 'lucide-react';
 import { playHarmonicChime, setSfxEnabled, isSfxEnabled } from './CosmicAtmosphere';
 
@@ -234,6 +235,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <QrCode className="w-4 h-4 stroke-[2.5]" />
             </button>
+
+            {/* Account & Identity Portal Button */}
+            <a
+              href="/account.html"
+              className="px-3 py-1.5 rounded-xl bg-[#141428] hover:bg-[#1e1c36] text-[#ffd159] text-xs font-rajdhani font-bold tracking-wider flex items-center gap-1.5 transition-all border border-[#ffd159]/40 hover:border-[#ffd159]"
+              title="Identity & Account Console"
+            >
+              <User className="w-3.5 h-3.5 text-[#ffd159]" />
+              <span className="hidden sm:inline">ACCOUNT</span>
+            </a>
           </div>
         </div>
 

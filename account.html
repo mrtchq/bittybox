@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BITTY BOX // Identity & Account Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Lato', 'sans-serif'],
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              950: '#040407',
+              900: '#080811',
+              850: '#0e0d1c',
+              800: '#141428',
+              750: '#1e1c36',
+            },
+            gold: {
+              300: '#ffe082',
+              400: '#ffd159',
+              500: '#f5b82e',
+              600: '#d99814',
+            },
+            chroma: {
+              cyan: '#00e5ff',
+              blue: '#2563eb',
+              purple: '#9333ea',
+              magenta: '#ec4899',
+              orange: '#f97316',
+              lime: '#10b981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(ellipse at bottom, #161226 0%, #06050b 50%, #030306 100%);
+      color: #fff;
+      user-select: none;
+    }
+
+    /* Infinite upward star motion keyframe */
+    @keyframes animStar {
+      from { transform: translateY(0px); }
+      to { transform: translateY(-2000px); }
+    }
+
+    #stars, #stars2, #stars3 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    #stars {
+      width: 1px;
+      height: 1px;
+      animation: animStar 50s linear infinite;
+    }
+    #stars:after {
+      content: " ";
+      position: absolute;
+      top: 2000px;
+      width: 1px;
+      height: 1px;
+      background: transparent;
+    }
+
+    #stars2 {
+      width: 2px;
+      height: 2px;
+      animation: animStar 95s linear infinite;
+    }
+    #stars2:after {
+      content: " ";
+      position: absolute;
+      top: 2000px;
+      width: 2px;
+      height: 2px;
+      background: transparent;
+    }
+
+    #stars3 {
+      width: 3px;
+      height: 3px;
+      animation: animStar 140s linear infinite;
+    }
+    #stars3:after {
+      content: " ";
+      position: absolute;
+      top: 2000px;
+      width: 3px;
+      height: 3px;
+      background: transparent;
+    }
+
+    .nebula-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: 
+        radial-gradient(circle at 18% 45%, rgba(245, 184, 46, 0.15) 0%, transparent 48%),
+        radial-gradient(circle at 82% 35%, rgba(147, 51, 234, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 88% 65%, rgba(236, 72, 153, 0.16) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(255, 209, 89, 0.20) 0%, transparent 60%);
+      z-index: 1;
+    }
+
+    .glass-hud {
+      background: rgba(12, 12, 24, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 209, 89, 0.22);
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(245, 184, 46, 0.05);
+    }
+
+    .glass-hud-rainbow {
+      background: rgba(14, 12, 28, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 25px rgba(147, 51, 234, 0.1);
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF9C4 0%, #FFD54F 40%, #FFB300 70%, #FF8F00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 12px rgba(255, 213, 79, 0.6));
+    }
+
+    .rainbow-gradient-text {
+      background: linear-gradient(90deg, #00e5ff 0%, #3b82f6 20%, #9333ea 40%, #ec4899 65%, #f97316 85%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 16px rgba(236, 72, 153, 0.5));
+    }
+
+    .btn-glow-pulse {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-glow-pulse::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+      transform: rotate(25deg) translateY(-100%);
+      animation: btnShimmer 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes btnShimmer {
+      0%, 70% { transform: rotate(25deg) translateY(-100%); }
+      100% { transform: rotate(25deg) translateY(100%); }
+    }
+
+    .rainbow-border-pulse {
+      position: relative;
+    }
+    .rainbow-border-pulse::before {
+      content: '';
+      position: absolute;
+      inset: -1.5px;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: linear-gradient(90deg, #ffd159, #00e5ff, #a855f7, #ec4899, #f97316, #10b981, #ffd159);
+      background-size: 300% 300%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: rainbowGlow 8s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes rainbowGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .stardust-spark {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      z-index: 9999;
+      animation: sparkFade 0.75s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+    @keyframes sparkFade {
+      0% { opacity: 1; transform: translate(0, 0) scale(1.4); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    }
+
+    .perspective-grid {
+      position: absolute;
+      bottom: -60px;
+      left: -50%;
+      width: 200%;
+      height: 40%;
+      background-image: 
+        linear-gradient(rgba(245, 184, 46, 0.16) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.16) 1.5px, transparent 1.5px);
+      background-size: 55px 55px;
+      transform: perspective(320px) rotateX(68deg);
+      transform-origin: bottom center;
+      mask-image: linear-gradient(to top, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 95%);
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 95%);
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body class="h-full flex flex-col font-sans relative overflow-x-hidden">
+  <!-- Interactive Cursor Aura -->
+  <div id="cursorGlow" class="pointer-events-none fixed -top-40 -left-40 w-80 h-80 rounded-full opacity-50 mix-blend-screen blur-3xl bg-gradient-to-tr from-gold-500/20 via-purple-500/20 to-pink-500/20 transition-transform duration-75 ease-out z-0"></div>
+
+  <!-- Cosmic Canvas Starfield Backdrop -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="nebula-glow"></div>
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+    <div class="perspective-grid"></div>
+  </div>
+
+  <!-- Top Header Navigation -->
+  <header class="relative z-30 px-6 py-4 flex items-center justify-between border-b border-gold-400/20 glass-hud backdrop-blur-md">
+    <!-- Back link to Bitty Box Homepage -->
+    <a href="bittybox.html" class="flex items-center space-x-3 group cursor-pointer" title="Return to System Overview">
+      <div class="w-8 h-8 rounded-lg bg-space-900 border border-gold-400/30 flex items-center justify-center text-gold-400 group-hover:border-gold-300 group-hover:bg-gold-500/10 transition-all">
+        <svg class="w-4 h-4 transform group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </div>
+      <div class="font-orbitron font-black text-xl tracking-wider">
+        <span class="gold-gradient-text inline-block transform group-hover:scale-105 transition-transform">BITTY</span>
+        <span class="rainbow-gradient-text inline-block transform group-hover:scale-105 transition-transform ml-1">BOX</span>
+      </div>
+    </a>
+
+    <!-- Security & Status Tag -->
+    <div class="flex items-center space-x-3 text-xs font-rajdhani">
+      <div class="hidden sm:flex items-center space-x-2 bg-space-950/80 px-3.5 py-1 rounded-full border border-gold-400/30 text-gold-300 shadow-inner">
+        <span class="w-2 h-2 rounded-full bg-chroma-lime animate-ping"></span>
+        <span class="font-semibold tracking-wider uppercase">IDENTITY GATEWAY // SECURE</span>
+      </div>
+      <a href="bittybox.html" class="text-xs font-rajdhani text-slate-400 hover:text-gold-300 transition-colors uppercase tracking-widest px-3 py-1 rounded border border-slate-700/60 hover:border-gold-400/40">
+        ESC // Home
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Account Viewport -->
+  <main class="relative z-20 flex-1 w-full flex items-center justify-center p-6 md:p-12 overflow-y-auto">
+    <div class="max-w-md w-full">
+
+      <!-- ================= NOT LOGGED IN CONTAINER ================= -->
+      <div id="authContainer" class="glass-hud-rainbow rainbow-border-pulse rounded-2xl p-6 md:p-8 relative">
+        
+        <!-- Header / Mode Switcher -->
+        <div class="text-center mb-6">
+          <div class="inline-flex p-1 rounded-xl bg-space-950/90 border border-gold-400/30 mb-4">
+            <button id="tabSignIn" onclick="switchAuthTab('signin')" class="px-5 py-2 rounded-lg font-orbitron text-xs font-bold tracking-widest transition-all bg-gradient-to-r from-gold-400 to-amber-500 text-space-950 shadow-md">
+              SIGN IN
+            </button>
+            <button id="tabSignUp" onclick="switchAuthTab('signup')" class="px-5 py-2 rounded-lg font-orbitron text-xs font-bold tracking-widest transition-all text-slate-400 hover:text-white">
+              CREATE IDENTITY
+            </button>
+          </div>
+          <p id="authSubtitle" class="text-xs font-rajdhani tracking-wider text-slate-300">
+            Authenticate your Bitty Box cryptographic capsule session
+          </p>
+        </div>
+
+        <!-- ================= SIGN IN FORM ================= -->
+        <form id="signInForm" onsubmit="handleSignIn(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-rajdhani tracking-wider uppercase text-slate-300 mb-1">
+              Bitty ID / Email Handle
+            </label>
+            <div class="relative">
+              <input type="text" id="signInIdentifier" required placeholder="agent@bittybox.network" 
+                class="w-full px-4 py-3 rounded-xl bg-space-900/90 border border-slate-700 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 text-sm text-white placeholder-slate-500 outline-none transition-all font-mono">
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-rajdhani tracking-wider uppercase text-slate-300">
+                Master Passphrase
+              </label>
+              <a href="#" onclick="alertNotice('For recovery, enter your 12-word BIP-39 mnemonic seed phrase in the passphrase field.')" class="text-[11px] font-rajdhani text-gold-400 hover:underline">
+                BIP-39 Recovery?
+              </a>
+            </div>
+            <div class="relative">
+              <input type="password" id="signInPassphrase" required placeholder="••••••••••••••••" 
+                class="w-full px-4 py-3 rounded-xl bg-space-900/90 border border-slate-700 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 text-sm text-white placeholder-slate-500 outline-none transition-all font-mono">
+              <button type="button" onclick="togglePassVisibility('signInPassphrase')" class="absolute right-3 top-3 text-slate-400 hover:text-gold-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs font-rajdhani text-slate-300 pt-1">
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="checkbox" id="rememberSession" checked class="rounded bg-space-900 border-slate-700 text-gold-400 focus:ring-gold-400">
+              <span class="tracking-wider">Remember Capsule Session</span>
+            </label>
+            <span class="text-chroma-cyan font-semibold tracking-wider">AES-256</span>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button type="submit" class="btn-glow-pulse w-full py-3.5 rounded-xl font-orbitron text-xs font-bold tracking-[0.2em] uppercase bg-gradient-to-r from-gold-400 via-amber-500 to-chroma-magenta text-space-950 shadow-lg shadow-gold-500/30 hover:scale-[1.02] transition-transform active:scale-95">
+              AUTHENTICATE & ENTER
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="relative flex items-center justify-center my-4">
+            <div class="border-t border-slate-700/60 w-full"></div>
+            <span class="bg-space-950 px-3 text-[10px] font-rajdhani uppercase tracking-widest text-slate-500">OR BIO-KEY</span>
+            <div class="border-t border-slate-700/60 w-full"></div>
+          </div>
+
+          <!-- Biometric Quick Auth Button -->
+          <button type="button" onclick="handleBiometricAuth()" class="w-full py-2.5 rounded-xl font-rajdhani text-xs font-semibold tracking-widest uppercase border border-chroma-cyan/30 bg-space-900/60 hover:bg-chroma-cyan/10 hover:border-chroma-cyan text-chroma-cyan transition-all flex items-center justify-center space-x-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11m12 0a4 4 0 00-8 0v.5"/>
+            </svg>
+            <span>SIGN IN WITH PASSKEY / BIOMETRIC</span>
+          </button>
+        </form>
+
+        <!-- ================= CREATE IDENTITY FORM (Initially Hidden) ================= -->
+        <form id="signUpForm" onsubmit="handleSignUp(event)" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-rajdhani tracking-wider uppercase text-slate-300 mb-1">
+              Agent Call-Sign / Handle
+            </label>
+            <input type="text" id="signUpHandle" required placeholder="cipher-runner" 
+              class="w-full px-4 py-3 rounded-xl bg-space-900/90 border border-slate-700 focus:border-chroma-magenta focus:ring-1 focus:ring-chroma-magenta text-sm text-white placeholder-slate-500 outline-none transition-all font-mono">
+          </div>
+
+          <div>
+            <label class="block text-xs font-rajdhani tracking-wider uppercase text-slate-300 mb-1">
+              Secure Communications Email
+            </label>
+            <input type="email" id="signUpEmail" required placeholder="handle@domain.com" 
+              class="w-full px-4 py-3 rounded-xl bg-space-900/90 border border-slate-700 focus:border-chroma-magenta focus:ring-1 focus:ring-chroma-magenta text-sm text-white placeholder-slate-500 outline-none transition-all font-mono">
+          </div>
+
+          <div>
+            <label class="block text-xs font-rajdhani tracking-wider uppercase text-slate-300 mb-1">
+              Master Encryption Passphrase
+            </label>
+            <input type="password" id="signUpPassphrase" required placeholder="Minimum 8 characters" 
+              class="w-full px-4 py-3 rounded-xl bg-space-900/90 border border-slate-700 focus:border-chroma-magenta focus:ring-1 focus:ring-chroma-magenta text-sm text-white placeholder-slate-500 outline-none transition-all font-mono">
+          </div>
+
+          <!-- Recovery Seed Preview -->
+          <div class="p-3 rounded-xl bg-space-950/80 border border-gold-400/20 text-xs font-mono">
+            <div class="flex items-center justify-between text-gold-400 font-rajdhani uppercase tracking-wider mb-1">
+              <span>BIP-39 Vault Seed</span>
+              <button type="button" onclick="regenerateSeed()" class="text-[10px] text-chroma-cyan hover:underline">Regenerate</button>
+            </div>
+            <div id="seedPhraseDisplay" class="text-slate-400 text-[11px] leading-relaxed">
+              falcon orbital beacon prism quantum pulsar cyber vortex matrix zenith aegis solar
+            </div>
+          </div>
+
+          <button type="submit" class="btn-glow-pulse w-full py-3.5 rounded-xl font-orbitron text-xs font-bold tracking-[0.2em] uppercase bg-gradient-to-r from-chroma-cyan via-purple-600 to-chroma-magenta text-white shadow-lg shadow-purple-500/30 hover:scale-[1.02] transition-transform active:scale-95">
+            INITIALIZE CAPSULE IDENTITY
+          </button>
+        </form>
+
+      </div>
+
+      <!-- ================= LOGGED IN DASHBOARD CONSOLE ================= -->
+      <div id="dashboardContainer" class="glass-hud-rainbow rounded-2xl p-6 md:p-8 relative hidden">
+        <div class="flex items-center justify-between border-b border-gold-400/20 pb-4 mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-gold-400 via-purple-500 to-chroma-magenta p-[1.5px] flex items-center justify-center">
+              <div class="w-full h-full bg-space-950 rounded-[10px] flex items-center justify-center font-orbitron font-bold text-lg text-gold-300" id="userAvatar">
+                BB
+              </div>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-lg text-white" id="userDisplayName">Agent Zero</h3>
+              <div class="flex items-center space-x-2 text-xs font-rajdhani text-chroma-lime">
+                <span class="w-1.5 h-1.5 rounded-full bg-chroma-lime animate-pulse"></span>
+                <span class="tracking-widest uppercase">CAPSULE ACTIVE // ENCRYPTED</span>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="handleSignOut()" class="px-3 py-1.5 rounded-lg border border-slate-700 hover:border-red-400 text-xs font-rajdhani tracking-wider text-slate-400 hover:text-red-400 transition-colors">
+            DISCONNECT
+          </button>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <div class="p-3.5 rounded-xl bg-space-950/80 border border-gold-400/20">
+            <div class="text-[10px] font-rajdhani tracking-widest uppercase text-slate-400">Micro-Web Capsules</div>
+            <div class="font-orbitron text-xl font-bold text-gold-400 mt-1">3 ACTIVE</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-space-950/80 border border-purple-500/20">
+            <div class="text-[10px] font-rajdhani tracking-widest uppercase text-slate-400">Security Clearance</div>
+            <div class="font-orbitron text-xl font-bold text-chroma-cyan mt-1">TIER 4</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-space-950/80 border border-pink-500/20">
+            <div class="text-[10px] font-rajdhani tracking-widest uppercase text-slate-400">Dead Man Switch</div>
+            <div class="font-orbitron text-xl font-bold text-chroma-magenta mt-1">72:00:00</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-space-950/80 border border-emerald-500/20">
+            <div class="text-[10px] font-rajdhani tracking-widest uppercase text-slate-400">Consensus Key</div>
+            <div class="font-orbitron text-sm font-mono text-chroma-lime mt-2 truncate">0x7F...B19D</div>
+          </div>
+        </div>
+
+        <!-- Action Links -->
+        <div class="space-y-3">
+          <a href="bittybox.html" class="btn-glow-pulse w-full py-3.5 rounded-xl font-orbitron text-xs font-bold tracking-[0.2em] uppercase bg-gradient-to-r from-gold-400 via-amber-500 to-chroma-magenta text-space-950 shadow-lg shadow-gold-500/30 flex items-center justify-center space-x-2">
+            <span>ENTER SYSTEM CONSOLE</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Notification Banner -->
+  <div id="noticeToast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none px-5 py-3 rounded-xl bg-space-900/95 border border-gold-400/50 text-gold-300 font-rajdhani text-sm shadow-xl flex items-center space-x-3">
+    <span class="w-2 h-2 rounded-full bg-gold-400"></span>
+    <span id="noticeMessage">Action complete</span>
+  </div>
+
+  <script>
+    const brandColors = [
+      { hex: '#ffd159' },
+      { hex: '#00e5ff' },
+      { hex: '#a855f7' },
+      { hex: '#ec4899' },
+      { hex: '#f97316' },
+      { hex: '#10b981' }
+    ];
+
+    // Seed phrase word list for mock BIP-39 generation
+    const seedWords = ['orbital', 'quantum', 'pulse', 'beacon', 'prism', 'cyber', 'vortex', 'matrix', 'zenith', 'aegis', 'solar', 'falcon', 'nebula', 'strata', 'hyper', 'crypto', 'titan', 'apex', 'lunar', 'shield'];
+
+    function generateRandomSeed() {
+      const selected = [];
+      for (let i = 0; i < 12; i++) {
+        selected.push(seedWords[Math.floor(Math.random() * seedWords.length)]);
+      }
+      return selected.join(' ');
+    }
+
+    function regenerateSeed() {
+      const display = document.getElementById('seedPhraseDisplay');
+      if (display) display.innerText = generateRandomSeed();
+    }
+
+    function switchAuthTab(tab) {
+      const btnIn = document.getElementById('tabSignIn');
+      const btnUp = document.getElementById('tabSignUp');
+      const formIn = document.getElementById('signInForm');
+      const formUp = document.getElementById('signUpForm');
+      const subtitle = document.getElementById('authSubtitle');
+
+      if (tab === 'signin') {
+        btnIn.className = "px-5 py-2 rounded-lg font-orbitron text-xs font-bold tracking-widest transition-all bg-gradient-to-r from-gold-400 to-amber-500 text-space-950 shadow-md";
+        btnUp.className = "px-5 py-2 rounded-lg font-orbitron text-xs font-bold tracking-widest transition-all text-slate-400 hover:text-white";
+        formIn.classList.remove('hidden');
+        formUp.classList.add('hidden');
+        subtitle.innerText = "Authenticate your Bitty Box cryptographic capsule session";
+      } else {
+        btnUp.className = "px-5 py-2 rounded-lg font-orbitron text-xs font-bold tracking-widest transition-all bg-gradient-to-r from-chroma-cyan via-purple-600 to-chroma-magenta text-white shadow-md";
+        btnIn.className = "px-5 py-2 rounded-lg font-orbitron text-xs font-bold tracking-widest transition-all text-slate-400 hover:text-white";
+        formUp.classList.remove('hidden');
+        formIn.classList.add('hidden');
+        subtitle.innerText = "Initialize a new autonomous agent cryptographic identity";
+      }
+    }
+
+    function togglePassVisibility(inputId) {
+      const el = document.getElementById(inputId);
+      if (el) el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function alertNotice(msg) {
+      const toast = document.getElementById('noticeToast');
+      const message = document.getElementById('noticeMessage');
+      if (!toast || !message) return;
+      message.innerText = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+
+    function handleSignIn(e) {
+      e.preventDefault();
+      const id = document.getElementById('signInIdentifier').value || 'agent-01';
+      saveAndShowSession(id);
+    }
+
+    function handleSignUp(e) {
+      e.preventDefault();
+      const handle = document.getElementById('signUpHandle').value || 'new-agent';
+      saveAndShowSession(handle);
+    }
+
+    function handleBiometricAuth() {
+      alertNotice('Scanning Biometric Key via WebAuthn...');
+      setTimeout(() => {
+        saveAndShowSession('Biometric-Identity-01');
+      }, 700);
+    }
+
+    function saveAndShowSession(name) {
+      localStorage.setItem('bittybox_session', JSON.stringify({ name: name, active: true }));
+      updateAuthState();
+      alertNotice(`Welcome back, ${name}`);
+    }
+
+    function handleSignOut() {
+      localStorage.removeItem('bittybox_session');
+      updateAuthState();
+      alertNotice('Session disconnected safely.');
+    }
+
+    function updateAuthState() {
+      const authCard = document.getElementById('authContainer');
+      const dashCard = document.getElementById('dashboardContainer');
+      const session = JSON.parse(localStorage.getItem('bittybox_session') || 'null');
+
+      if (session && session.active) {
+        authCard.classList.add('hidden');
+        dashCard.classList.remove('hidden');
+        document.getElementById('userDisplayName').innerText = session.name;
+        document.getElementById('userAvatar').innerText = session.name.substring(0, 2).toUpperCase();
+      } else {
+        dashCard.classList.add('hidden');
+        authCard.classList.remove('hidden');
+      }
+    }
+
+    // Interactive Stardust and Ambient Particles
+    function initDynamicStarfields() {
+      function generateBoxShadows(count) {
+        let shadows = [];
+        for (let i = 0; i < count; i++) {
+          const x = Math.floor(Math.random() * 2000);
+          const y = Math.floor(Math.random() * 2000);
+          const color = brandColors[Math.floor(Math.random() * brandColors.length)].hex;
+          shadows.push(`${x}px ${y}px ${color}`);
+        }
+        return shadows.join(', ');
+      }
+
+      const style = document.createElement('style');
+      style.textContent = `
+        #stars:after { box-shadow: ${generateBoxShadows(350)}; }
+        #stars2:after { box-shadow: ${generateBoxShadows(130)}; }
+        #stars3:after { box-shadow: ${generateBoxShadows(60)}; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    let cursorTarget = { x: -300, y: -300 };
+    let cursorCurrent = { x: -300, y: -300 };
+    let lastSparkTime = 0;
+
+    function initStardustCursorAndTrail() {
+      const glow = document.getElementById('cursorGlow');
+      if (!glow) return;
+
+      window.addEventListener('mousemove', (e) => {
+        cursorTarget.x = e.clientX;
+        cursorTarget.y = e.clientY;
+
+        const now = performance.now();
+        if (now - lastSparkTime > 75) {
+          lastSparkTime = now;
+          if (Math.random() < 0.4) spawnStardustSpark(e.clientX, e.clientY);
+        }
+      });
+
+      function updateGlowPosition() {
+        cursorCurrent.x += (cursorTarget.x - cursorCurrent.x) * 0.14;
+        cursorCurrent.y += (cursorTarget.y - cursorCurrent.y) * 0.14;
+        glow.style.transform = `translate3d(${cursorCurrent.x}px, ${cursorCurrent.y}px, 0)`;
+        requestAnimationFrame(updateGlowPosition);
+      }
+      requestAnimationFrame(updateGlowPosition);
+    }
+
+    function spawnStardustSpark(x, y) {
+      const spark = document.createElement('div');
+      spark.className = 'stardust-spark';
+      const size = Math.random() * 3 + 2;
+      const col = brandColors[Math.floor(Math.random() * brandColors.length)];
+      spark.style.width = `${size}px`;
+      spark.style.height = `${size}px`;
+      spark.style.backgroundColor = col.hex;
+      spark.style.boxShadow = `0 0 10px ${col.hex}`;
+      spark.style.left = `${x}px`;
+      spark.style.top = `${y}px`;
+
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * 24 + 8;
+      spark.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+      spark.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 750);
+    }
+
+    window.onload = function() {
+      initDynamicStarfields();
+      initStardustCursorAndTrail();
+      updateAuthState();
+    };
+  </script>
+</body>
+</html>
