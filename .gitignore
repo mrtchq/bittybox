@@ -1,15 +1,26 @@
-*.cache
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
 *.log
+.env*
+!.env.example
+
+# Legacy snapshots and scratch files
+*ADHD*
+*adhd*
+*.legacy.*
+package.static-server.json
+*.cache
 *.DS_Store
 package-lock.json
 node_modules
 # Local Netlify folder
 .netlify
-
 # Environment files
 .env
 .env.*
-
 .docs-rollback-*
 *.bak*
 *.bak-*
