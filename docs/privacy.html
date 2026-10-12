@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — Bitty Box</title>
+<meta name="description" content="What Bitty Box stores, what it does not, and who else is involved.">
+<link rel="icon" href="/favicon.svg?v=c47b3bf9ebeb910c">
+<style>body{margin:0 auto;padding:10vh 24px;max-width:40rem;font:18px/1.6 system-ui,sans-serif;color:#16161d;background:#fff}h1{font-size:clamp(2rem,8vw,3.5rem);letter-spacing:-.05em;line-height:1.1}a{color:inherit;text-underline-offset:4px}.back{display:inline-block;margin-top:1rem;padding:12px 20px;border:1px solid currentColor;border-radius:10px;text-decoration:none}small{color:#666}@media(prefers-color-scheme:dark){body{background:#16161d;color:#eee}small{color:#aaa}}</style>
+<link rel="stylesheet" href="/theme-fonts/fonts.css?v=c47b3bf9ebeb910c">
+<link rel="stylesheet" href="/cognitive-theme.css?v=c47b3bf9ebeb910c">
+</head>
+<body>
+<h1>Privacy</h1>
+<p><small>Last updated 11 October 2026</small></p>
+
+<h2>Bitty Boxes without an account</h2>
+<p>The core editor needs no account. It does not upload your page to a content database — the content is compressed into the link itself, and opening the link reconstructs the page in the reader's browser.</p>
+<p>Because the page travels inside the URL, it is not private. Anyone who receives the link can read it, and anyone who receives it can pass it along. Keep private information out of unencrypted links.</p>
+<p>Every Bitty Box link is a complete copy of its content. It can be indexed or cached by search engines, forwarded, screenshotted, or saved by third parties.</p>
+
+<h2>What an account stores</h2>
+<p>If you sign in, we store the minimum needed to run the account and bill for usage:</p>
+<ul>
+<li><strong>Email address</strong> — used to send sign-in links and identify your account. Sign-in is by magic link or a one-time code sent to that address.</li>
+<li><strong>Display name and avatar</strong> — what you set, shown to you in the interface.</li>
+<li><strong>A hashed password</strong> — stored only if you set one. It is stored as a hash, not in plain text.</li>
+<li><strong>API keys</strong> — the keys you create, so the service can recognize requests from your account.</li>
+<li><strong>Credit balance and usage counters</strong> — how many credits you have, and how they have been spent, split by API, manual, and MCP use.</li>
+<li><strong>Payment identifiers</strong> — the customer and credit-account identifiers assigned by our payment provider. Card numbers are never stored by Bitty Box.</li>
+<li><strong>Your saved links</strong> — the Bitty Boxes you keep in your account, if you save them.</li>
+<li><strong>Sign-in times</strong> — a record of when you last signed in.</li>
+</ul>
+
+<h2>Who else is involved</h2>
+<p>Some information passes through third parties because they deliver a service Bitty Box depends on. They receive what is necessary for that job and process it under their own terms.</p>
+<ul>
+<li><strong>Resend</strong> — sends the sign-in emails. Receives your email address and the message content.</li>
+<li><strong>Creem</strong> — processes credit purchases. Receives the payment details you enter and the email attached to the purchase.</li>
+<li><strong>Google</strong> — if you choose Google sign-in, it confirms your identity to us and supplies your email address.</li>
+<li><strong>Font and code delivery</strong> — some pages load fonts and libraries from Google Fonts, jsDelivr, and cdnjs. Those services see your IP address and user agent, as with any web request.</li>
+</ul>
+
+<h2>Retention and deletion</h2>
+<p>Account data is kept while the account exists. Sign-in records and usage counters are kept so the service can tell who a session belongs to and how credits were spent.</p>
+<p>Bitty Box does not currently offer a self-serve delete button. If you want your account and its records removed, email <a href="mailto:support@bittybox.org">support@bittybox.org</a> from the address on the account and ask — we will remove the records and confirm by reply. Records inside backups may persist for a limited period after deletion.</p>
+
+<h2>Cookies and analytics</h2>
+<p>Bitty Box uses session cookies to keep you signed in and a device-trust cookie so it does not ask for a new code every time you visit. We do not sell your data and do not use it to build advertising profiles.</p>
+
+<h2>Your choices</h2>
+<p>You can use the core editor with no account at all, which means no account data is created. If you have an account and want it exported or removed, email <a href="mailto:support@bittybox.org">support@bittybox.org</a> from the address on the account.</p>
+
+<a class="back" href="/edit">Create a Bitty Box</a>
+<p><small>Original open-source software © 2018 Nicholas Jitkoff. <a href="/LICENSE.txt">License and attribution</a>.</small></p>
+</body>
+</html>

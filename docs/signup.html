@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign up / Sign in — Bitty Box</title>
+<meta name="description" content="Sign in to Bitty Box with a magic link sent to your email. No password needed.">
+<link rel="icon" href="/favicon.svg?v=c47b3bf9ebeb910c">
+<style>body{margin:0 auto;padding:10vh 24px;max-width:40rem;font:18px/1.6 system-ui,sans-serif;color:#16161d;background:#fff}h1{font-size:clamp(2rem,8vw,3rem);letter-spacing:-.04em;line-height:1.1}a{color:inherit;text-underline-offset:4px}.back{display:inline-block;margin:0.4rem 0.4rem 0 0;padding:12px 20px;border:1px solid currentColor;border-radius:10px;text-decoration:none}small{color:#666}.card{border:1px solid #ddd;border-radius:14px;padding:24px;margin:24px 0}label{display:block;font-weight:600;margin:12px 0 4px}input[type=email],input[type=text]{width:100%;box-sizing:border-box;padding:12px;border:1px solid #999;border-radius:10px;font:inherit}button{font:inherit;padding:12px 22px;border-radius:10px;border:1px solid #16161d;background:#16161d;color:#fff;cursor:pointer;margin-top:16px}button:disabled{opacity:.5;cursor:wait}.status{margin-top:16px;padding:12px 16px;border-radius:10px;background:#f4f4f5}.status.error{background:#fde8e8}.bb-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid #ddd;margin-bottom:8px}.bb-home{font-weight:700;text-decoration:none}.bb-links .back{padding:8px 14px;font-size:.9rem}@media(prefers-color-scheme:dark){body{background:#16161d;color:#eee}.card{border-color:#444}input[type=email],input[type=text]{background:#222;color:#eee;border-color:#555}button{background:#eee;color:#16161d;border-color:#eee}small{color:#aaa}.status{background:#26262e}.status.error{background:#4a2020}.bb-nav{border-color:#444}}</style>
+<link rel="stylesheet" href="/theme-fonts/fonts.css?v=c47b3bf9ebeb910c">
+<link rel="stylesheet" href="/cognitive-theme.css?v=c47b3bf9ebeb910c">
+<script src="/account-common.js"></script>
+</head>
+<body>
+<div id="bb-nav"></div>
+<h1>Sign up / Sign in</h1>
+<p>Enter your email and we&rsquo;ll send you a <strong>magic sign-in link</strong> — no password needed. New here? The same form creates your account.</p>
+
+<div id="verify-status"></div>
+
+<div class="card" id="signup-card">
+  <form id="magic-form">
+    <label for="email">Email address</label>
+    <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@example.com">
+    <label for="displayName">Display name <small>(optional)</small></label>
+    <input id="displayName" name="displayName" type="text" autocomplete="nickname" placeholder="What should we call you?">
+    <label style="font-weight:400"><input id="trustDevice" type="checkbox" checked> Trust this device <small>(stay signed in longer)</small></label>
+    <div><button id="send-btn" type="submit">Email me a sign-in link</button></div>
+  </form>
+  <div class="status" id="form-status" hidden></div>
+</div>
+
+<div class="card" id="sent-card" hidden>
+  <h2>Check your email</h2>
+  <p id="sent-text">We sent a sign-in link.</p>
+  <p><small>The link expires soon. Open it on this device to finish signing in — you&rsquo;ll land on your <a href="/account">Account</a> page.</small></p>
+  <p><small>Didn&rsquo;t get it? Check spam, then <a href="/signup">try again</a>.</small></p>
+</div>
+
+<p><small>By signing in you agree to the <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy</a> policy. Signed in on this device before? <a href="/account">Go to your Account</a> · <a href="/store">Credit store</a></small></p>
+<a class="back" href="/edit">Create a Bitty Box</a>
+
+<script>
+(function () {
+  'use strict';
+  BittyAccount.renderNav('signup');
+  var form = document.getElementById('magic-form');
+  var emailEl = document.getElementById('email');
+  var nameEl = document.getElementById('displayName');
+  var trustEl = document.getElementById('trustDevice');
+  var btn = document.getElementById('send-btn');
+  var formStatus = document.getElementById('form-status');
+  var sentCard = document.getElementById('sent-card');
+  var signupCard = document.getElementById('signup-card');
+  var sentText = document.getElementById('sent-text');
+  var verifyBox = document.getElementById('verify-status');
+
+  function show(el, msg, isError) {
+    el.hidden = false;
+    el.textContent = msg;
+    el.classList.toggle('error', Boolean(isError));
+  }
+
+  // Already signed in? Offer the account page, but still allow a fresh link.
+  if (BittyAccount.isSignedIn()) {
+    show(formStatus, 'This device is already signed in. You can go straight to your Account, or request a link for a different email below.', false);
+  }
+
+  // Handle a verify hash that lands here, plus ?verify=failed handoffs from /.
+  function verifyStatus(msg, isError) {
+    var d = document.createElement('div');
+    d.className = 'status' + (isError ? ' error' : '');
+    d.textContent = msg;
+    verifyBox.appendChild(d);
+  }
+  BittyAccount.handleVerifyHashIfPresent(verifyStatus);
+  try {
+    var q = new URLSearchParams(window.location.search);
+    if (q.get('verify') === 'failed') {
+      verifyStatus('Sign-in link problem: ' + (q.get('reason') || 'invalid or expired link.') + ' Request a fresh link below.', true);
+    } else if (q.get('next')) {
+      verifyStatus('Please sign in first — then we\u2019ll send you to ' + q.get('next') + '.', false);
+    }
+  } catch (e) {}
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var email = emailEl.value.trim();
+    if (!email || email.indexOf('@') < 0) {
+      show(formStatus, 'Please enter a valid email address.', true);
+      return;
+    }
+    btn.disabled = true;
+    show(formStatus, 'Sending your sign-in link…', false);
+    BittyAccount.requestMagicLink(email, nameEl.value.trim(), trustEl.checked)
+      .then(function (r) {
+        if (r.ok && r.data && r.data.success) {
+          signupCard.hidden = true;
+          sentCard.hidden = false;
+          sentText.textContent = (r.data.message || 'Magic link dispatched to your email address.')
+            + ' (' + (r.data.email || email) + ')';
+        } else {
+          var msg = (r.data && r.data.error) || 'Could not send the link (HTTP ' + r.status + ').';
+          show(formStatus, msg, true);
+        }
+      })
+      .catch(function (err) {
+        show(formStatus, 'Network error: ' + (err && err.message ? err.message : err), true);
+      })
+      .then(function () { btn.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

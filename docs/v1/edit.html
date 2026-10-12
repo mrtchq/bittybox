@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src https://codepen.io; style-src 'unsafe-inline' 'self'">
+<title>Bitty Box</title>
+<style>
+html,body{margin:0;height:100%;}
+#doc-title{position:fixed;top:12px;left:12px;z-index:9999;font:700 20px/1.1 system-ui,sans-serif;color:#111;}
+</style>
+<script src="js/lzma/lzma_worker-min.js?v=c47b3bf9ebeb910c"></script>
+<script src="js/jquery-3.3.1.min.js?v=c47b3bf9ebeb910c"></script>
+<script src="data.js?v=c47b3bf9ebeb910c"></script>
+<script src="edit.js?v=c47b3bf9ebeb910c"></script>
+<link rel="stylesheet" type="text/css" href="edit.css?v=c47b3bf9ebeb910c">
+<body>
+
+<div id="doc-title" contenteditable="true" placeholder="Bitty Box"></div>
+<div id="doc-file"></div>
+
+<div id="placeholder">
+Bitty Box things<br>
+can be conveyed in a link.<br>
+type here &ndash; and then share!<p></div>
+<div id="copy-message">Link copied to clipboard.</div>
+<div id="content"></div>
+<span id="toolbar">
+  <a target="_blank" id="length"></a>&nbsp;<a target="_blank" id="qrcode" href="https://zxing.appspot.com/generator/">qr code</a>
+  <div id="menu-contents" class="menu">
+    <p><a id="copy">copy link</a><br>
+    ----<br>
+    <span id="menus-share-hint" class="disabled">share via</span><br>
+    <a target="_blank" id="twitter" href="https://twitter.com/">twitter</a><br>
+    <!--  <a target="_blank" id="bitly" href="https://bitly.com/">Bitly</a><br> -->
+
+    ----<br>
+    <a id="new" href="/edit">new site</a><br>
+      </div>
+</span>
+</body>
+</html>

@@ -1,78 +1,125 @@
-<!doctype html>
-<html lang="en" class="dark" data-theme="monochrome">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Bitty Box &bull; Built for AI Agents &bull; Humans Welcome</title>
-    <meta name="description" content="Bitty Box encodes full HTML, markdown, and interactive apps into compressed URL fragments. Built for autonomous AI agents, LLM toolchains, and human creators." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
-    <meta property="og:title" content="Bitty Box &bull; Built for AI Agents &bull; Humans Welcome" />
-    <meta property="og:description" content="Encode entire webpages into compressed URL fragments. Built for autonomous AI agents and human creators." />
-    <meta property="og:image" content="https://bittybox.org/bittybox-logo.png" />
-    <meta property="og:type" content="website" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#0d0419" />
-    <script type="module" crossorigin src="/assets/index-DZootrB8.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BrrLpl3-.css">
-    <!-- UI polish layer: additive, no build step. Rollback = remove these two tags. -->
-    <link rel="stylesheet" href="/ui-polish.css?v=20260918">
-    <script defer src="/ui-polish.js?v=20260918"></script>
-    <style id="editor-static-background">
-      /* Static editor atmosphere: preserve the cyan/violet console aesthetic without motion. */
-      .bitty-starfield {
-        background-color: #080610 !important;
-        background-image:
-          radial-gradient(ellipse 90% 58% at 50% 0%, rgba(0, 229, 255, .075), transparent 72%),
-          radial-gradient(ellipse 70% 52% at 100% 100%, rgba(192, 132, 252, .065), transparent 76%),
-          linear-gradient(rgba(103, 232, 249, .045) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(192, 132, 252, .04) 1px, transparent 1px) !important;
-        background-size: auto, auto, 48px 48px, 48px 48px !important;
-        background-attachment: fixed !important;
-        animation: none !important;
-        transform: none !important;
-        translate: none !important;
-      }
-      .bitty-starfield #stars,
-      .bitty-starfield #stars2,
-      .bitty-starfield #stars3,
-      .bitty-starfield #stars::after,
-      .bitty-starfield #stars2::after,
-      .bitty-starfield #stars3::after {
-        display: none !important;
-        animation: none !important;
-        will-change: auto !important;
-      }
-    </style>
-  <style id="hide-roadmap-trigger">[title="View locks deferred to roadmap"]{display:none!important;visibility:hidden!important}</style>
-</head>
-  <body class="bg-[#090314] text-cyan-100 antialiased overflow-x-hidden selection:bg-fuchsia-500 selection:text-white">
-    <div id="root"></div>
-    <script>
-      (function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.answerly.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('3c4bb44a-bf4b-47c5-afb4-06ad06033638');
-    </script>
-    <script>
-      !function (t, e, c, n) {
-          var s = e.createElement(c);
-          s.async = 1, s.src = 'https://scripts.claspo.io/scripts/' + n + '.js';
-          var r = e.scripts[0];
-          r.parentNode.insertBefore(s, r);
-          var f = function () {
-              f.c(arguments);
-          };
-          f.q = [];
-          f.c = function () {
-              f.q.push(arguments);
-          };
-          t['claspo'] = t['claspo'] || f;
-      }(window, document, 'script', '47141298BFC642CEBA85862D44D6D303');
-    </script>
-    <script>claspo('init');</script>
-  </body>
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src data: 'self'; script-src cdnjs.cloudflare.com cdn.jsdelivr.net cdn.quilljs.com 'self'; connect-src https://codepen.io https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; style-src https://fonts.googleapis.com cdnjs.cloudflare.com cdn.jsdelivr.net cdn.quilljs.com 'unsafe-inline' 'self'">
+<meta id="themeColor" name="theme-color" content="#f1f1f1" media="(prefers-color-scheme: light)">
+<meta id="themeColorDark" name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="canonical" id="canonical" href="/edit">
+
+<title>Bitty Box</title>
+<link rel="stylesheet" type="text/css" href="/edit.css?v=c47b3bf9ebeb910c">
+<link id="favicon" rel="icon" href='/favicon.svg?v=c47b3bf9ebeb910c'>
+<link rel="stylesheet"
+      href="/vendor/highlight.css?v=c47b3bf9ebeb910c">
+<link href="/vendor/quill.snow.css?v=c47b3bf9ebeb910c" rel="stylesheet"
+      integrity="sha384-ecIckRi4QlKYya/FQUbBUjS4qp65jF/J87Guw5uzTbO1C1Jfa/6kYmd6dXUF6D7i"
+      crossorigin="anonymous">
+<script src="/vendor/highlight.min.js?v=c47b3bf9ebeb910c"></script>
+<script src="/vendor/quill.min.js?v=c47b3bf9ebeb910c"
+        integrity="sha384-reiVBUvj2HgLgCZalqLFSMBVD9LdtiwGyybRGCq2AfP8Rgebz5DxEnwKp4FpagKV"
+        crossorigin="anonymous"></script>
+<script src="/js/crypto-js.min.js?v=c47b3bf9ebeb910c"></script>
+<script src="/js/lzma/lzma_worker-min.js?v=c47b3bf9ebeb910c"></script>
+<script src="/edit.js?v=c47b3bf9ebeb910c" type="module"></script>
+<link rel="stylesheet" type="text/css" href="/vendor/material-icons.css?v=c47b3bf9ebeb910c">
+<link rel="stylesheet" href="/theme-fonts/fonts.css?v=c47b3bf9ebeb910c">
+<link rel="stylesheet" href="/cognitive-theme.css?v=c47b3bf9ebeb910c">
+
+<body>
+<div id="preview-backdrop" class="preview-backdrop hide-before-edit"></div>
+<aside id="preview-panel" class="preview-side-panel hide-before-edit" aria-label="Preview Side Panel">
+  <div class="preview-panel-header">
+    <div class="preview-panel-title">
+      <span class="preview-pulse-dot"></span>
+      <span class="preview-panel-heading">PREVIEW</span>
+    </div>
+    <div class="preview-panel-actions">
+      <a id="preview-popout" class="preview-panel-btn" target="_blank" title="Open preview in new window" aria-label="Open preview in new window">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+      <button id="preview-close-btn" class="preview-panel-btn" type="button" title="Close Preview" aria-label="Close Preview">✕</button>
+    </div>
+  </div>
+  <div class="preview-panel-body">
+    <iframe id="preview-frame" class="preview-frame-content" title="Bitty Box Preview"></iframe>
+  </div>
+</aside>
+
+<button id="preview-side-tab" class="hide-before-edit preview-edge-tab" type="button" title="Toggle Preview" aria-label="Toggle Preview">
+  <span class="preview-edge-tab-badge">PREVIEW</span>
+</button>
+
+<div class="editor-container">
+<div id="doc-file"></div>
+<input id="file-input" type="file" name="name" style="display: none;" />
+<div id="drop-zone"></div>
+
+<div id="copy-message">Link copied to clipboard.</div>
+
+
+
+
+<div id="doc-title" class="toolbarbutton hide-before-edit" placeholder="untitled"> 
+  <div class="title" id="doc-title-text"></div>
+  <form id="md-contents" class="menu">
+    <div class="inputrow"><label for="md-title">title</label><input type="text" name="title" id="md-title" placeholder="untitled"><input title="Include link metadata" type="checkbox" name="includeMetadata" id="md-include" value="true" checked></div>
+    <div class="inputrow metadata-on"><label for="md-description">description</label><input type="text" name="description" id="md-description" placeholder="text"></div>
+    <div class="inputrow metadata-on"><label for="md-favicon">favicon</label><input type="text" name="favicon" id="md-favicon" placeholder="emoji or url"></div>
+    <div class="inputrow metadata-on"><label for="md-image">image</label><input type="text" name="image" id="md-image" placeholder="image url"></div>
+    <div class="inputrow"><label for="md-password">password</label><input type="text" name="password" id="md-password" placeholder="encryption password"></div>
+  </form>
+</div>
+
+<div id="placeholder">&nbsp;Bitty Box things<br>&nbsp;can be conveyed in a link.<br>&nbsp;type here &ndash; and then share!<p>&nbsp;</div>
+
+<div id="editor"></div>
+
+<div class="toolbar" id="menubar">
+
+   <!-- <div class="spacer"></div> -->
+  <div class="toolbar-right">
+    <a id="agent-api-link" href="/agents.html" title="Bitty Box API and MCP for AI agents" style="display:inline-flex;align-items:center;height:38px;margin-right:10px;padding:0 13px;border:1px solid rgba(255,209,89,.38);border-radius:8px;color:#ffe08a;text-decoration:none;font:600 14px/1 system-ui,sans-serif;letter-spacing:.04em;">API · MCP</a>
+    <div id="length" class="hide-before-edit menu-item"></div>
+    <div id="preview-tab" class="hide-before-edit menu-item preview-tab-title" role="tab" aria-selected="false" title="Toggle preview side panel">PREVIEW</div>
+    <div id="share" class="hide-before-edit menu-item">share</div>
+      <div id="menu-contents" class="menu">
+        <a id="preview">show preview</a>
+        <a id="copy">copy link</a>
+        <hr>
+        <span id="menus-share-hint" class="disabled">share via</span><br>
+        <a target="_blank" id="qrcode" href="https://zxing.appspot.com/generator/">make qr code</a>
+        <a target="_blank" id="twitter" href="https://twitter.com/">twitter</a>
+        <!--  <a target="_blank" id="bitly" href="https://bitly.com/">Bitly</a><br> -->
+
+        <a id="upload" style="display:none">upload file…</a>
+        <hr>
+        <!-- <a id="new" href="/edit">new site</a><br> -->
+  </div>
+
+
+  <div class="toolbar hide-before-edit" id="formatbar">
+
+    <div class="menu-item" id="format-toggle">Aa</div>
+    <span class="ql-formats">
+      <button class="ql-bold"></button>
+      <button class="ql-italic"></button>
+      <select class="ql-header" id="ql-header">HX</select>
+      <select class="ql-color"><option value="#F6D4D2"/><option value="#FAE4D3"/><option value="#FEF3D5"/><option value="#CFE8DC"/><option value="#CFE0E8"/><option value="#E1D7E8"/><option value="white"/><option value="#E99590"/><option value="#F3BB92"/><option value="#FDE095"/><option value="#86C6A8"/><option value="#86B1C6"/><option value="#B39BC6"/><option value="#A4A4A4"/><option value="#D42A20"/><option value="#E77625"/><option value="#FAC22B"/><option value="#0E8E51"/><option value="#0E638E"/><option value="#67378D"/><option value="#727272"/><option value="#BF0000"/><option value="#DB3F00"/><option value="#F8A600"/><option value="#005E12"/><option value="#00275E"/><option value="#2C005C"/><option value="#3D3D3D"/><option value="#860000"/><option value="#943E00"/><option value="#AE7400"/><option value="#00420D"/><option value="#001B42"/><option value="#1F0040"/><option value="black"/></select>
+      <select class="ql-background"><option value="#F6D4D2"/><option value="#FAE4D3"/><option value="#FEF3D5"/><option value="#CFE8DC"/><option value="#CFE0E8"/><option value="#E1D7E8"/><option value="white"/><option value="#E99590"/><option value="#F3BB92"/><option value="#FDE095"/><option value="#86C6A8"/><option value="#86B1C6"/><option value="#B39BC6"/><option value="#A4A4A4"/><option value="#D42A20"/><option value="#E77625"/><option value="#FAC22B"/><option value="#0E8E51"/><option value="#0E638E"/><option value="#67378D"/><option value="#727272"/><option value="#BF0000"/><option value="#DB3F00"/><option value="#F8A600"/><option value="#005E12"/><option value="#00275E"/><option value="#2C005C"/><option value="#3D3D3D"/><option value="#860000"/><option value="#943E00"/><option value="#AE7400"/><option value="#00420D"/><option value="#001B42"/><option value="#1F0040"/><option value="black"/></select>
+      <button class="ql-clean"></button>
+    </span>
+    <span class="ql-formats">
+      <button class="ql-code-block"></button>
+      <button class="ql-link"></button>
+      <select class="ql-align"></select>
+      <button type="button" class="ql-list" value="bullet"></button>
+      <button type="button" class="ql-list" value="ordered"></button>
+      <button class="ql-indent" value="-1"></button>
+      <button class="ql-indent" value="+1"></button>
+    </span>
+  </div>
+</div>
+</div>
+</body>
 </html>

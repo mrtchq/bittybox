@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account — Bitty Box</title>
+<meta name="description" content="Your Bitty Box account: profile, credit balance, and sign-out.">
+<link rel="icon" href="/favicon.svg?v=c47b3bf9ebeb910c">
+<style>body{margin:0 auto;padding:10vh 24px;max-width:40rem;font:18px/1.6 system-ui,sans-serif;color:#16161d;background:#fff}h1{font-size:clamp(2rem,8vw,3rem);letter-spacing:-.04em;line-height:1.1}a{color:inherit;text-underline-offset:4px}.back{display:inline-block;margin:0.4rem 0.4rem 0 0;padding:12px 20px;border:1px solid currentColor;border-radius:10px;text-decoration:none}small{color:#666}.card{border:1px solid #ddd;border-radius:14px;padding:24px;margin:24px 0}.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #eee}.row:last-child{border-bottom:0}.balance{font-size:2.2rem;font-weight:800;letter-spacing:-.03em}button{font:inherit;padding:12px 22px;border-radius:10px;border:1px solid #16161d;background:#16161d;color:#fff;cursor:pointer;margin-top:16px}table{width:100%;border-collapse:collapse;font-size:.92rem}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid #eee}.status{margin-top:16px;padding:12px 16px;border-radius:10px;background:#f4f4f5}.status.error{background:#fde8e8}.bb-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid #ddd;margin-bottom:8px}.bb-home{font-weight:700;text-decoration:none}.bb-links .back{padding:8px 14px;font-size:.9rem}@media(prefers-color-scheme:dark){body{background:#16161d;color:#eee}.card{border-color:#444}.row{border-color:#333}th,td{border-color:#333}button{background:#eee;color:#16161d;border-color:#eee}small{color:#aaa}.status{background:#26262e}.status.error{background:#4a2020}.bb-nav{border-color:#444}}</style>
+<link rel="stylesheet" href="/theme-fonts/fonts.css?v=c47b3bf9ebeb910c">
+<link rel="stylesheet" href="/cognitive-theme.css?v=c47b3bf9ebeb910c">
+<script src="/account-common.js"></script>
+</head>
+<body>
+<div id="bb-nav"></div>
+<h1>Account</h1>
+<div id="verify-status"></div>
+<div class="status" id="loading">Loading your account…</div>
+
+<div id="content" hidden>
+  <div class="card">
+    <h2 style="margin-top:0">Signed in</h2>
+    <div class="row"><span>Email</span><strong id="u-email">—</strong></div>
+    <div class="row"><span>Display name</span><strong id="u-name">—</strong></div>
+    <div class="row"><span>User ID</span><small id="u-id">—</small></div>
+    <div class="row"><span>Session expires</span><small id="u-exp">—</small></div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Credits</h2>
+    <div class="balance"><span id="balance">—</span> <small>CR</small></div>
+    <p><a class="back" href="/store">Get more credits</a></p>
+    <h3>Recent ledger</h3>
+    <div id="ledger"><small>Loading…</small></div>
+  </div>
+
+  <p><button id="logout-btn" type="button">Sign out this device</button></p>
+  <p><small>AI agent? See the <a href="/agents.html">agent guide</a> and <a href="/api/docs">API &amp; MCP reference</a> — send your session as the <code>x-session-id</code> header.</small></p>
+</div>
+
+<div class="status error" id="error" hidden></div>
+<p><a class="back" href="/edit">Create a Bitty Box</a></p>
+
+<script>
+(function () {
+  'use strict';
+  BittyAccount.renderNav('account');
+  var loading = document.getElementById('loading');
+  var content = document.getElementById('content');
+  var errorBox = document.getElementById('error');
+  var verifyBox = document.getElementById('verify-status');
+
+  function fail(msg) {
+    loading.hidden = true;
+    errorBox.hidden = false;
+    errorBox.textContent = msg;
+  }
+
+  function verifyStatus(msg, isError) {
+    var d = document.createElement('div');
+    d.className = 'status' + (isError ? ' error' : '');
+    d.textContent = msg;
+    verifyBox.appendChild(d);
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function load() {
+    BittyAccount.getMe().then(function (r) {
+      if (r.ok && r.data && r.data.success && r.data.user) {
+        var u = r.data.user;
+        loading.hidden = true;
+        content.hidden = false;
+        document.getElementById('u-email').textContent = u.email || '—';
+        document.getElementById('u-name').textContent = u.displayName || u.display_name || '—';
+        document.getElementById('u-id').textContent = u.id || '—';
+        document.getElementById('u-exp').textContent = r.data.sessionExpiresAt || '—';
+        loadLedger();
+      } else if (r.status === 401) {
+        BittyAccount.setSessionId(null);
+        window.location.href = '/signup?next=' + encodeURIComponent('/account');
+      } else {
+        fail((r.data && r.data.error) || 'Could not load your account (HTTP ' + r.status + ').');
+      }
+    }).catch(function (err) {
+      fail('Network error: ' + (err && err.message ? err.message : err));
+    });
+  }
+
+  function loadLedger() {
+    BittyAccount.getLedger().then(function (r) {
+      var box = document.getElementById('ledger');
+      if (r.ok && r.data && r.data.success) {
+        document.getElementById('balance').textContent = (r.data.balance != null ? r.data.balance : '—');
+        var entries = r.data.entries || [];
+        if (!entries.length) {
+          box.innerHTML = '<small>No credit activity yet.</small>';
+          return;
+        }
+        var html = '<table><thead><tr><th>When</th><th>Change</th><th>Reason</th></tr></thead><tbody>';
+        entries.slice(0, 20).forEach(function (e) {
+          html += '<tr><td>' + esc(e.createdAt || e.created_at || '') + '</td>'
+            + '<td>' + esc(e.amount != null ? e.amount : (e.delta != null ? e.delta : '')) + '</td>'
+            + '<td>' + esc(e.description || e.reason || e.type || '') + '</td></tr>';
+        });
+        box.innerHTML = html + '</tbody></table>';
+      } else {
+        box.innerHTML = '<small>Ledger unavailable: ' + esc((r.data && r.data.error) || ('HTTP ' + r.status)) + '</small>';
+      }
+    }).catch(function (err) {
+      document.getElementById('ledger').innerHTML = '<small>Ledger error: ' + esc(err && err.message ? err.message : err) + '</small>';
+    });
+  }
+
+  document.getElementById('logout-btn').addEventListener('click', function () {
+    BittyAccount.logout().then(function () { window.location.href = '/signup'; });
+  });
+
+  // A verify hash takes precedence: verify first (redirects to /account on
+  // success), otherwise fall through to the normal session load.
+  BittyAccount.handleVerifyHashIfPresent(verifyStatus).then(function (outcome) {
+    if (outcome === 'verified' || outcome === 'redirected') return;
+    if (!BittyAccount.isSignedIn()) {
+      window.location.href = '/signup?next=' + encodeURIComponent('/account');
+      return;
+    }
+    load();
+  });
+})();
+</script>
+</body>
+</html>
