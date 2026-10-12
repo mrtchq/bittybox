@@ -9,6 +9,11 @@
   function = "metadata"
 
 [[redirects]]
+  from = "/test4"
+  to = "/test4.html"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

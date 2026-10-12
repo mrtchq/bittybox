@@ -5,3 +5,15 @@ package-lock.json
 node_modules
 # Local Netlify folder
 .netlify
+
+# Environment files
+.env
+.env.*
+
+# Backup and rollback archives
+.docs-agentbox-previous/
+.docs.rollback-*/
+docs.rollback-*/
+*.bak
+*.bak-*
+

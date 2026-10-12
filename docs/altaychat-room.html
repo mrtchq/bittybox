@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AltayChat AI Room · Bitty Box Test</title>
+<style>
+:root{color-scheme:dark;--bg:#080611;--panel:#111022;--line:#2b2850;--text:#f4f1ff;--muted:#aaa6c9;--cyan:#67e8f9;--violet:#c084fc;--good:#86efac;--bad:#fda4af}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% 0,#13233b 0,transparent 50%),var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif;padding:24px}.shell{max-width:760px;margin:auto}.eyebrow{color:var(--cyan);letter-spacing:.16em;text-transform:uppercase;font-size:12px;font-weight:700}.panel{background:color-mix(in srgb,var(--panel) 94%,transparent);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 20px 80px #0008}h1{margin:6px 0 8px;font-size:clamp(28px,6vw,48px);line-height:1.05}p{color:var(--muted)}.status{display:flex;gap:10px;align-items:center;color:var(--muted);margin:16px 0}.dot{width:10px;height:10px;border-radius:50%;background:#777}.dot.live{background:var(--good);box-shadow:0 0 14px var(--good)}.dot.bad{background:var(--bad)}.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}input,button{font:inherit;border-radius:12px;border:1px solid var(--line);padding:12px 14px}input{background:#090817;color:var(--text);min-width:0;flex:1}button{background:linear-gradient(135deg,#164b63,#43216e);color:#fff;cursor:pointer;font-weight:700}button.secondary{background:#17152c}button:disabled{opacity:.45;cursor:not-allowed}.chat{height:290px;overflow:auto;background:#090817;border:1px solid var(--line);border-radius:14px;padding:14px;margin:16px 0}.msg{margin:0 0 12px}.msg b{color:var(--cyan)}.msg.agent b{color:var(--violet)}.msg.system{color:var(--muted);font-size:13px}.small{font-size:13px;color:var(--muted)}audio{width:100%;margin-top:12px}code{color:var(--cyan)}a{color:var(--cyan)}
+</style>
+</head>
+<body><main class="shell"><section class="panel">
+<div class="eyebrow">Bitty Room · staging experiment</div>
+<h1>Talk to an AI agent</h1>
+<p>Speak naturally with <strong>Altay</strong>, a Bitty Box AI agent. Your microphone audio is sent over a WebRTC session to the realtime model; the staging bridge never stores the audio.</p>
+<div class="status"><span id="dot" class="dot"></span><span id="status">Ready to connect</span></div>
+<div class="row"><input id="roomKey" aria-label="Room key" value="bittybox-demo-voice-2026"><button id="connect">Start voice room</button><button id="disconnect" class="secondary" disabled>Leave</button></div>
+<div id="chat" class="chat"><div class="msg system">Press <b>Start voice room</b>, allow microphone access, and say hello.</div></div>
+<div class="row"><input id="text" aria-label="Message to agent" placeholder="Or type a message…" disabled><button id="send" disabled>Send</button></div>
+<audio id="remote" autoplay controls></audio>
+<p class="small">Test endpoint: <code>wss://test.bittybox.org/altaychat/&lt;room&gt;</code> · This page is staging-only.</p>
+</section></main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const roomKey = $('roomKey'), connect = $('connect'), disconnect = $('disconnect'), text = $('text'), send = $('send');
+  const chat = $('chat'), status = $('status'), dot = $('dot'), remote = $('remote');
+  let pc = null, dc = null, mic = null;
+  const add = (who, message, kind='') => { const el=document.createElement('div'); el.className=`msg ${kind}`; el.innerHTML=`<b>${who}:</b> ${String(message).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}`; chat.appendChild(el); chat.scrollTop=chat.scrollHeight; };
+  const setStatus = (s, live=false, bad=false) => { status.textContent=s; dot.className='dot'+(live?' live':'')+(bad?' bad':''); };
+  const waitIce = () => new Promise(resolve => { if (pc.iceGatheringState === 'complete') return resolve(); const done=()=>{if(pc.iceGatheringState==='complete'){pc.removeEventListener('icegatheringstatechange',done);resolve();}}; pc.addEventListener('icegatheringstatechange',done); setTimeout(resolve,2500); });
+  const sendEvent = event => { if (dc && dc.readyState==='open') dc.send(JSON.stringify(event)); };
+  const ask = instruction => sendEvent({type:'response.create',response:{modalities:['audio','text'],instructions:instruction}});
+  const sendText = () => { const value=text.value.trim(); if(!value)return; add('You',value); sendEvent({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:value}]}}); ask('Answer the user naturally and briefly.'); text.value=''; };
+  function onEvent(raw){ let e; try{e=JSON.parse(raw)}catch{return} if(e.type==='response.audio_transcript.delta') add('Altay',e.delta,'agent'); if(e.type==='conversation.item.input_audio_transcription.completed') add('You',e.transcript); if(e.type==='error') add('System',e.error?.message||'Realtime error','system'); }
+  async function start(){
+    connect.disabled=true; roomKey.disabled=true; setStatus('Requesting microphone…');
+    try {
+      mic=await navigator.mediaDevices.getUserMedia({audio:true});
+      pc=new RTCPeerConnection(); pc.ontrack=e=>{remote.srcObject=e.streams[0];};
+      mic.getTracks().forEach(track=>pc.addTrack(track,mic));
+      dc=pc.createDataChannel('oai-events'); dc.onmessage=e=>onEvent(e.data); dc.onopen=()=>{text.disabled=false;send.disabled=false;add('Altay','Hello! I am Altay. What would you like to test?','agent'); ask('Greet the human warmly in one short sentence, then ask what they want to test.');};
+      const offer=await pc.createOffer(); await pc.setLocalDescription(offer); await waitIce();
+      const key=roomKey.value.trim(); const r=await fetch('/altaychat-ai/session',{method:'POST',headers:{'Content-Type':'application/sdp','X-AltayChat-Room-Key':key},body:pc.localDescription.sdp});
+      if(!r.ok) throw new Error((await r.json().catch(()=>({}))).error||`Session request failed (${r.status})`);
+      await pc.setRemoteDescription({type:'answer',sdp:await r.text()}); disconnect.disabled=false; setStatus('Connected — speak now',true);
+    } catch(e){ stop(); setStatus(e.message||'Unable to connect',false,true); add('System',e.message||'Unable to connect','system'); }
+  }
+  function stop(){ if(dc)dc.close(); if(pc)pc.close(); if(mic)mic.getTracks().forEach(t=>t.stop()); pc=dc=mic=null; remote.srcObject=null; text.disabled=true;send.disabled=true;disconnect.disabled=true;connect.disabled=false;roomKey.disabled=false; }
+  connect.onclick=start; disconnect.onclick=()=>{stop();setStatus('Disconnected');add('System','You left the room.','system');}; send.onclick=sendText; text.addEventListener('keydown',e=>{if(e.key==='Enter')sendText();});
+})();
+</script></body></html>
